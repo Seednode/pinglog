@@ -49,7 +49,7 @@ func init() {
 	rootCmd.Flags().BoolVar(&Privileged, "privileged", false, "run as privileged user (needed on Windows)")
 	rootCmd.Flags().BoolVar(&Timestamp, "timestamp", false, "prepend timestamps to output")
 	rootCmd.Flags().BoolVar(&Dropped, "dropped", false, "log dropped packets")
-	rootCmd.Flags().BoolVar(&NoRTT, "no-rtt", false, "do not record RTTs (reduces memory use for long sessions")
+	rootCmd.Flags().BoolVar(&NoRTT, "no-rtt", false, "do not record RTTs (reduces memory use for long sessions)")
 	rootCmd.Flags().StringVarP(&Output, "output", "o", "", "write to the specified file as well as stdout")
 	rootCmd.Flags().Lookup("output").NoOptDefVal = "<hostname>.log"
 }
