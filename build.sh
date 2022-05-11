@@ -23,5 +23,7 @@ for platform in ${platforms[@]}; do
     output_name+=".exe"
   fi
   env GOOS="${GOOS}" GOARCH="${GOARCH}" go build -ldflags "-s -w" -o "builds/${output_name}"
-  upx -q --brute "builds/${output_name}"
+  if [ "${GOOS}" != "windows" ]; then
+    upx -q --brute "builds/${output_name}"
+  fi
 done
