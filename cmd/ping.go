@@ -25,19 +25,38 @@ func humanReadableSize(bytes int) string {
 		float64(bytes)/float64(div), "kMGTPE"[exp])
 }
 
+func pingStats(myPing *ping.Pinger) {
+	stats := myPing.Statistics()
+	fmt.Printf("\n--- %s ping statistics ---\n", stats.Addr)
+	fmt.Printf("%v packets transmitted, %v received, %.3v%% packet loss\n",
+		stats.PacketsSent, stats.PacketsRecv, stats.PacketLoss)
+	fmt.Printf("rtt min/avg/max/mdev = %v/%v/%v/%v\n",
+		stats.MinRtt, stats.AvgRtt, stats.MaxRtt, stats.StdDevRtt)
+	sentBytes := int((float64(stats.PacketsSent) * (100 - stats.PacketLoss) * float64(myPing.Size)) / 100)
+	receivedBytes := int((float64(stats.PacketsRecv) * (100 - stats.PacketLoss) * float64(myPing.Size)) / 100)
+	fmt.Printf(
+		"\n%s%v\n%s%v\n",
+		"Sent = ", humanReadableSize(sentBytes),
+		"Recv = ", humanReadableSize(receivedBytes),
+	)
+}
+
 func pingCmd(arguments []string) {
 	host := arguments[0]
 	myPing, err := ping.NewPinger(host)
 	if err != nil {
 		panic(err)
 	}
+
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	go func() {
-		for range c {
+		for {
+			<-c
 			myPing.Stop()
 		}
 	}()
+
 	myPing.Count = Count
 	myPing.Size = Size
 	myPing.Interval = Interval
