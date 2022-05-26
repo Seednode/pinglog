@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strconv"
 	"time"
 
 	"github.com/fatih/color"
@@ -58,6 +59,10 @@ func pingCmd(arguments []string) {
 	}
 
 	var lastReceivedPacket = 0
+
+	blue := color.New(color.FgBlue)
+	green := color.New(color.FgGreen)
+
 	myPing.OnRecv = func(pkt *ping.Packet) {
 		currentPacket := pkt.Seq
 
@@ -79,9 +84,10 @@ func pingCmd(arguments []string) {
 			return
 		}
 
-		fmt.Printf("%v bytes from %v: icmp_seq=%v ttl=%v time=%v\n",
-			pkt.Nbytes, color.BlueString(pkt.IPAddr.String()), pkt.Seq, pkt.Ttl, pkt.Rtt)
+		fmt.Printf("%v from %v: icmp_seq=%v ttl=%v time=%v\n",
+			blue.Sprintf("%v bytes", strconv.Itoa(pkt.Nbytes)), blue.Sprintf(pkt.IPAddr.String()), blue.Sprintf(strconv.Itoa(pkt.Seq)), blue.Sprintf(strconv.Itoa(pkt.Ttl)), blue.Sprintf(fmt.Sprintf("%v", pkt.Rtt)))
 	}
+
 	myPing.OnDuplicateRecv = func(pkt *ping.Packet) {
 		if Timestamp {
 			timeStamp := time.Now().Format(DATE)
@@ -100,21 +106,21 @@ func pingCmd(arguments []string) {
 	myPing.OnFinish = func(stats *ping.Statistics) {
 		runTime := time.Since(startTime)
 
-		fmt.Printf("\n--- %s ping statistics ---\n", stats.Addr)
+		fmt.Printf("\n--- %s ping statistics ---\n", green.Sprintf(stats.Addr))
 
-		fmt.Printf("%v packets transmitted, %v received, %v packet loss, time %vms\n",
-			stats.PacketsSent, stats.PacketsRecv, HighlightPacketLoss(stats.PacketLoss), runTime.Milliseconds())
+		fmt.Printf("%v packets transmitted, %v received, %v, time %v\n",
+			blue.Sprintf("%v", stats.PacketsSent), blue.Sprintf("%v", stats.PacketsRecv), HighlightPacketLoss(stats.PacketLoss), blue.Sprintf("%vms", runTime.Milliseconds()))
 
 		fmt.Printf("rtt min/avg/max/mdev = %v/%v/%v/%v\n",
-			stats.MinRtt, stats.AvgRtt, stats.MaxRtt, stats.StdDevRtt)
+			blue.Sprintf("%v", stats.MinRtt), blue.Sprintf("%v", stats.AvgRtt), blue.Sprintf("%v", stats.MaxRtt), blue.Sprintf("%v", stats.StdDevRtt))
 
 		sentBytes := int((float64(stats.PacketsSent) * (100 - stats.PacketLoss) * float64(myPing.Size)) / 100)
 		receivedBytes := int((float64(stats.PacketsRecv) * (100 - stats.PacketLoss) * float64(myPing.Size)) / 100)
 
 		fmt.Printf(
 			"\n%s%v\n%s%v\n",
-			"Sent = ", humanReadableSize(sentBytes),
-			"Recv = ", humanReadableSize(receivedBytes),
+			"Sent = ", blue.Sprintf(humanReadableSize(sentBytes)),
+			"Recv = ", blue.Sprintf(humanReadableSize(receivedBytes)),
 		)
 	}
 
@@ -128,7 +134,7 @@ func pingCmd(arguments []string) {
 
 	startTime = time.Now()
 
-	fmt.Printf("PING %s (%s):\n", myPing.Addr(), myPing.IPAddr())
+	fmt.Printf("PING %s (%s):\n", green.Sprintf("%v", myPing.Addr()), blue.Sprintf("%v", myPing.IPAddr()))
 
 	err = myPing.Run()
 
