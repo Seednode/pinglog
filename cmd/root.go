@@ -11,8 +11,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var Version string = "0.2.0"
-
 var Count int
 var Dropped bool
 var Interval time.Duration

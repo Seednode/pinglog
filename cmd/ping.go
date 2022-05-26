@@ -75,6 +75,7 @@ func pingCmd(arguments []string) {
 
 	blue := color.New(color.FgBlue)
 	green := color.New(color.FgGreen)
+	grey := color.New(color.FgHiBlack)
 	red := color.New(color.FgRed)
 
 	myPing.OnRecv = func(pkt *ping.Packet) {
@@ -93,8 +94,8 @@ func pingCmd(arguments []string) {
 
 		if Timestamp {
 			timeStamp := time.Now().Format(DATE)
-			fmt.Printf("%v | %v bytes from %v: icmp_seq=%v ttl=%v time=%v\n",
-				timeStamp,
+			fmt.Printf("%v | %v from %v: icmp_seq=%v ttl=%v time=%v\n",
+				grey.Sprintf(timeStamp),
 				blue.Sprintf("%v bytes", strconv.Itoa(pkt.Nbytes)),
 				blue.Sprintf(pkt.IPAddr.String()),
 				blue.Sprintf(strconv.Itoa(pkt.Seq)),
@@ -115,8 +116,8 @@ func pingCmd(arguments []string) {
 		if Timestamp {
 			timeStamp := time.Now().Format(DATE)
 
-			fmt.Printf("%v | %v bytes from %v: icmp_seq=%v ttl=%v time=%v %v\n",
-				timeStamp,
+			fmt.Printf("%v | %v from %v: icmp_seq=%v ttl=%v time=%v %v\n",
+				grey.Sprintf(timeStamp),
 				blue.Sprintf("%v bytes", strconv.Itoa(pkt.Nbytes)),
 				blue.Sprintf(pkt.IPAddr.String()),
 				blue.Sprintf(strconv.Itoa(pkt.Seq)),
@@ -127,7 +128,7 @@ func pingCmd(arguments []string) {
 			return
 		}
 
-		fmt.Printf("%v bytes from %v: icmp_seq=%v ttl=%v time=%v %v\n",
+		fmt.Printf("%v from %v: icmp_seq=%v ttl=%v time=%v %v\n",
 			blue.Sprintf("%v bytes", strconv.Itoa(pkt.Nbytes)),
 			blue.Sprintf(pkt.IPAddr.String()),
 			blue.Sprintf(strconv.Itoa(pkt.Seq)),
@@ -141,7 +142,7 @@ func pingCmd(arguments []string) {
 	myPing.OnFinish = func(stats *ping.Statistics) {
 		runTime := time.Since(startTime)
 
-		fmt.Printf("\n--- %s ping statistics ---\n", green.Sprintf(stats.Addr))
+		fmt.Printf("\n--- %v ping statistics ---\n", green.Sprintf(stats.Addr))
 
 		fmt.Printf("%v packets transmitted, %v received, %v packet loss, time %v\n",
 			blue.Sprintf("%v", stats.PacketsSent),
@@ -159,7 +160,7 @@ func pingCmd(arguments []string) {
 		receivedBytes := int((float64(stats.PacketsRecv) * (100 - stats.PacketLoss) * float64(myPing.Size)) / 100)
 
 		fmt.Printf(
-			"\n%s%v\n%s%v\n",
+			"\n%v%v\n%v%v\n",
 			"Sent = ", blue.Sprintf(humanReadableSize(sentBytes)),
 			"Recv = ", blue.Sprintf(humanReadableSize(receivedBytes)),
 		)
@@ -175,7 +176,9 @@ func pingCmd(arguments []string) {
 
 	startTime = time.Now()
 
-	fmt.Printf("PING %s (%s):\n", green.Sprintf("%v", myPing.Addr()), blue.Sprintf("%v", myPing.IPAddr()))
+	fmt.Printf("PING %v (%v):\n",
+		green.Sprintf("%v", myPing.Addr()),
+		blue.Sprintf("%v", myPing.IPAddr()))
 
 	err = myPing.Run()
 
