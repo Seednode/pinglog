@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var Version string = "0.1"
+var Version string = "0.2.0"
 
 var Color bool
 var Count int
