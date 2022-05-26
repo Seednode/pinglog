@@ -33,6 +33,7 @@ func humanReadableSize(bytes int) string {
 
 func pingCmd(arguments []string) {
 	host := arguments[0]
+
 	myPing, err := ping.NewPinger(host)
 	if err != nil {
 		panic(err)
@@ -103,12 +104,13 @@ func pingCmd(arguments []string) {
 	}
 
 	var startTime time.Time
+
 	myPing.OnFinish = func(stats *ping.Statistics) {
 		runTime := time.Since(startTime)
 
 		fmt.Printf("\n--- %s ping statistics ---\n", green.Sprintf(stats.Addr))
 
-		fmt.Printf("%v packets transmitted, %v received, %v, time %v\n",
+		fmt.Printf("%v packets transmitted, %v received, %v packet loss, time %v\n",
 			blue.Sprintf("%v", stats.PacketsSent), blue.Sprintf("%v", stats.PacketsRecv), HighlightPacketLoss(stats.PacketLoss), blue.Sprintf("%vms", runTime.Milliseconds()))
 
 		fmt.Printf("rtt min/avg/max/mdev = %v/%v/%v/%v\n",
