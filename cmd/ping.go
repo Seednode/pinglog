@@ -156,8 +156,8 @@ func pingCmd(arguments []string) {
 			blue.Sprintf("%v", stats.MaxRtt),
 			blue.Sprintf("%v", stats.StdDevRtt))
 
-		sentBytes := int((float64(stats.PacketsSent) * (100 - stats.PacketLoss) * float64(myPing.Size)) / 100)
-		receivedBytes := int((float64(stats.PacketsRecv) * (100 - stats.PacketLoss) * float64(myPing.Size)) / 100)
+		sentBytes := int(stats.PacketsSent * myPing.Size)
+		receivedBytes := int(stats.PacketsRecv * myPing.Size)
 
 		fmt.Printf(
 			"\n%v%v\n%v%v\n",
