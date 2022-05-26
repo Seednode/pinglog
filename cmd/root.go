@@ -13,6 +13,7 @@ import (
 
 var Version string = "0.1"
 
+var Color bool
 var Count int
 var Interval time.Duration
 var Size int
@@ -41,6 +42,7 @@ func Execute() {
 }
 
 func init() {
+	rootCmd.Flags().BoolVar(&Color, "color", false, "colorize output")
 	rootCmd.Flags().IntVarP(&Count, "count", "c", -1, "number of packets to send")
 	rootCmd.Flags().DurationVarP(&Interval, "interval", "i", time.Second, "time between packets")
 	rootCmd.Flags().IntVarP(&Size, "size", "s", 56, "size of packets, in bytes")

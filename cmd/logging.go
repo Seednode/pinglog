@@ -10,7 +10,7 @@ import (
 
 func logOutput(logFile string) func() {
 	_, err := os.Stat(logFile)
-	if errors.Is(err, os.ErrNotExist) == false {
+	if !errors.Is(err, os.ErrNotExist) {
 		fmt.Print("File " + logFile + " already exists. Remove? (y/N) ")
 
 		input := bufio.NewScanner(os.Stdin)
@@ -44,6 +44,7 @@ func logOutput(logFile string) func() {
 	os.Stderr = writer
 
 	exit := make(chan bool)
+
 	go func() {
 		_, _ = io.Copy(multiWriter, reader)
 		exit <- true
