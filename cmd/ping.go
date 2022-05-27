@@ -159,22 +159,19 @@ func pingCmd(arguments []string) {
 
 		fmt.Printf("\n--- %v ping statistics ---\n", green.Sprintf(stats.Addr))
 
-		fmt.Printf("%v packets transmitted, %v received, %v packet loss, time %v\n",
+		fmt.Printf("%v packets transmitted (%v), %v received (%v), %v packet loss, time %v\n",
 			blue.Sprintf("%v", stats.PacketsSent),
+			blue.Sprintf(humanReadableSize(stats.PacketsSent*myPing.Size)),
 			blue.Sprintf("%v", stats.PacketsRecv),
+			blue.Sprintf(humanReadableSize(stats.PacketsRecv*myPing.Size)),
 			highlightPacketLoss(stats.PacketLoss),
 			blue.Sprintf("%v", runTime.Truncate(time.Millisecond)))
 
-		fmt.Printf("rtt min/avg/max/mdev = %v/%v/%v/%v\n",
+		fmt.Printf("rtt min/avg/max/mdev = %v/%v/%v/%v\n\n",
 			blue.Sprintf("%v", stats.MinRtt.Truncate(time.Microsecond)),
 			blue.Sprintf("%v", stats.AvgRtt.Truncate(time.Microsecond)),
 			blue.Sprintf("%v", stats.MaxRtt.Truncate(time.Microsecond)),
 			blue.Sprintf("%v", stats.StdDevRtt.Truncate(time.Microsecond)))
-
-		fmt.Printf("\n%v%v\n%v%v\n",
-			"Sent = ", blue.Sprintf(humanReadableSize(stats.PacketsSent*myPing.Size)),
-			"Recv = ", blue.Sprintf(humanReadableSize(stats.PacketsRecv*myPing.Size)),
-		)
 	}
 
 	if Output == "<hostname>.log" {
