@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"strconv"
 	"time"
 
 	"github.com/fatih/color"
@@ -96,20 +95,20 @@ func pingCmd(arguments []string) {
 			timeStamp := time.Now().Format(DATE)
 			fmt.Printf("%v | %v from %v: icmp_seq=%v ttl=%v time=%v\n",
 				grey.Sprintf(timeStamp),
-				blue.Sprintf("%v bytes", strconv.Itoa(pkt.Nbytes)),
-				blue.Sprintf(pkt.IPAddr.String()),
-				blue.Sprintf(strconv.Itoa(pkt.Seq)),
-				blue.Sprintf(strconv.Itoa(pkt.Ttl)),
-				blue.Sprintf(fmt.Sprintf("%v", pkt.Rtt)))
+				blue.Sprintf("%v bytes", pkt.Nbytes),
+				blue.Sprintf("%v", pkt.IPAddr),
+				blue.Sprintf("%v", pkt.Seq),
+				blue.Sprintf("%v", pkt.Ttl),
+				blue.Sprintf("%v", pkt.Rtt))
 			return
 		}
 
 		fmt.Printf("%v from %v: icmp_seq=%v ttl=%v time=%v\n",
-			blue.Sprintf("%v bytes", strconv.Itoa(pkt.Nbytes)),
-			blue.Sprintf(pkt.IPAddr.String()),
-			blue.Sprintf(strconv.Itoa(pkt.Seq)),
-			blue.Sprintf(strconv.Itoa(pkt.Ttl)),
-			blue.Sprintf(fmt.Sprintf("%v", pkt.Rtt)))
+			blue.Sprintf("%v bytes", pkt.Nbytes),
+			blue.Sprintf("%v", pkt.IPAddr),
+			blue.Sprintf("%v", pkt.Seq),
+			blue.Sprintf("%v", pkt.Ttl),
+			blue.Sprintf("%v", pkt.Rtt))
 	}
 
 	myPing.OnDuplicateRecv = func(pkt *ping.Packet) {
@@ -118,22 +117,22 @@ func pingCmd(arguments []string) {
 
 			fmt.Printf("%v | %v from %v: icmp_seq=%v ttl=%v time=%v %v\n",
 				grey.Sprintf(timeStamp),
-				blue.Sprintf("%v bytes", strconv.Itoa(pkt.Nbytes)),
-				blue.Sprintf(pkt.IPAddr.String()),
-				blue.Sprintf(strconv.Itoa(pkt.Seq)),
-				blue.Sprintf(strconv.Itoa(pkt.Ttl)),
-				blue.Sprintf(fmt.Sprintf("%v", pkt.Rtt)),
+				blue.Sprintf("%v bytes", pkt.Nbytes),
+				blue.Sprintf("%v", pkt.IPAddr),
+				blue.Sprintf("%v", pkt.Seq),
+				blue.Sprintf("%v", pkt.Ttl),
+				blue.Sprintf("%v", pkt.Rtt),
 				red.Sprintf("(DUP!)"))
 
 			return
 		}
 
 		fmt.Printf("%v from %v: icmp_seq=%v ttl=%v time=%v %v\n",
-			blue.Sprintf("%v bytes", strconv.Itoa(pkt.Nbytes)),
-			blue.Sprintf(pkt.IPAddr.String()),
-			blue.Sprintf(strconv.Itoa(pkt.Seq)),
-			blue.Sprintf(strconv.Itoa(pkt.Ttl)),
-			blue.Sprintf(fmt.Sprintf("%v", pkt.Rtt)),
+			blue.Sprintf("%v bytes", pkt.Nbytes),
+			blue.Sprintf("%v", pkt.IPAddr),
+			blue.Sprintf("%v", pkt.Seq),
+			blue.Sprintf("%v", pkt.Ttl),
+			blue.Sprintf("%v", pkt.Rtt),
 			red.Sprintf("(DUP!)"))
 	}
 
@@ -159,8 +158,7 @@ func pingCmd(arguments []string) {
 		sentBytes := int(stats.PacketsSent * myPing.Size)
 		receivedBytes := int(stats.PacketsRecv * myPing.Size)
 
-		fmt.Printf(
-			"\n%v%v\n%v%v\n",
+		fmt.Printf("\n%v%v\n%v%v\n",
 			"Sent = ", blue.Sprintf(humanReadableSize(sentBytes)),
 			"Recv = ", blue.Sprintf(humanReadableSize(receivedBytes)),
 		)
@@ -181,7 +179,6 @@ func pingCmd(arguments []string) {
 		blue.Sprintf("%v", myPing.IPAddr()))
 
 	err = myPing.Run()
-
 	if err != nil {
 		panic(err)
 	}
