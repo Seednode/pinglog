@@ -148,7 +148,7 @@ func pingCmd(arguments []string) {
 			blue.Sprintf("%v", stats.PacketsSent),
 			blue.Sprintf("%v", stats.PacketsRecv),
 			highlightPacketLoss(stats.PacketLoss),
-			blue.Sprintf("%v", runTime.Truncate(time.Microsecond)))
+			blue.Sprintf("%v", runTime.Truncate(time.Millisecond)))
 
 		fmt.Printf("rtt min/avg/max/mdev = %v/%v/%v/%v\n",
 			blue.Sprintf("%v", stats.MinRtt.Truncate(time.Microsecond)),
