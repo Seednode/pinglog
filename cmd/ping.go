@@ -95,20 +95,20 @@ func pingCmd(arguments []string) {
 			timeStamp := time.Now().Format(DATE)
 			fmt.Printf("%v | %v from %v: icmp_seq=%v ttl=%v time=%v\n",
 				grey.Sprintf(timeStamp),
-				blue.Sprintf("%v bytes", pkt.Nbytes),
+				blue.Sprintf("%v bytes", (pkt.Nbytes-8)),
 				blue.Sprintf("%v", pkt.IPAddr),
 				blue.Sprintf("%v", pkt.Seq),
 				blue.Sprintf("%v", pkt.Ttl),
-				blue.Sprintf("%v", pkt.Rtt))
+				blue.Sprintf("%v", pkt.Rtt.Truncate(time.Microsecond)))
 			return
 		}
 
 		fmt.Printf("%v from %v: icmp_seq=%v ttl=%v time=%v\n",
-			blue.Sprintf("%v bytes", pkt.Nbytes),
+			blue.Sprintf("%v bytes", (pkt.Nbytes-8)),
 			blue.Sprintf("%v", pkt.IPAddr),
 			blue.Sprintf("%v", pkt.Seq),
 			blue.Sprintf("%v", pkt.Ttl),
-			blue.Sprintf("%v", pkt.Rtt))
+			blue.Sprintf("%v", pkt.Rtt.Truncate(time.Microsecond)))
 	}
 
 	myPing.OnDuplicateRecv = func(pkt *ping.Packet) {
@@ -117,22 +117,22 @@ func pingCmd(arguments []string) {
 
 			fmt.Printf("%v | %v from %v: icmp_seq=%v ttl=%v time=%v %v\n",
 				grey.Sprintf(timeStamp),
-				blue.Sprintf("%v bytes", pkt.Nbytes),
+				blue.Sprintf("%v bytes", (pkt.Nbytes-8)),
 				blue.Sprintf("%v", pkt.IPAddr),
 				blue.Sprintf("%v", pkt.Seq),
 				blue.Sprintf("%v", pkt.Ttl),
-				blue.Sprintf("%v", pkt.Rtt),
+				blue.Sprintf("%v", pkt.Rtt.Truncate(time.Microsecond)),
 				red.Sprintf("(DUP!)"))
 
 			return
 		}
 
 		fmt.Printf("%v from %v: icmp_seq=%v ttl=%v time=%v %v\n",
-			blue.Sprintf("%v bytes", pkt.Nbytes),
+			blue.Sprintf("%v bytes", (pkt.Nbytes-8)),
 			blue.Sprintf("%v", pkt.IPAddr),
 			blue.Sprintf("%v", pkt.Seq),
 			blue.Sprintf("%v", pkt.Ttl),
-			blue.Sprintf("%v", pkt.Rtt),
+			blue.Sprintf("%v", pkt.Rtt.Truncate(time.Microsecond)),
 			red.Sprintf("(DUP!)"))
 	}
 
@@ -147,13 +147,13 @@ func pingCmd(arguments []string) {
 			blue.Sprintf("%v", stats.PacketsSent),
 			blue.Sprintf("%v", stats.PacketsRecv),
 			highlightPacketLoss(stats.PacketLoss),
-			blue.Sprintf("%vms", runTime.Milliseconds()))
+			blue.Sprintf("%v", runTime.Truncate(time.Microsecond)))
 
 		fmt.Printf("rtt min/avg/max/mdev = %v/%v/%v/%v\n",
-			blue.Sprintf("%v", stats.MinRtt),
-			blue.Sprintf("%v", stats.AvgRtt),
-			blue.Sprintf("%v", stats.MaxRtt),
-			blue.Sprintf("%v", stats.StdDevRtt))
+			blue.Sprintf("%v", stats.MinRtt.Truncate(time.Microsecond)),
+			blue.Sprintf("%v", stats.AvgRtt.Truncate(time.Microsecond)),
+			blue.Sprintf("%v", stats.MaxRtt.Truncate(time.Microsecond)),
+			blue.Sprintf("%v", stats.StdDevRtt.Truncate(time.Microsecond)))
 
 		sentBytes := int(stats.PacketsSent * myPing.Size)
 		receivedBytes := int(stats.PacketsRecv * myPing.Size)
