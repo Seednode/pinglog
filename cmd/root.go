@@ -42,17 +42,17 @@ func Execute() {
 
 func init() {
 	rootCmd.Flags().IntVarP(&Count, "count", "c", -1, "number of packets to send")
-	rootCmd.Flags().BoolVar(&Dropped, "dropped", false, "log dropped packets")
+	rootCmd.Flags().BoolVarP(&Dropped, "dropped", "d", false, "log dropped packets")
 	rootCmd.Flags().BoolVarP(&ForceOverwrite, "force", "f", false, "overwrite log file without prompting")
 	rootCmd.Flags().DurationVarP(&Interval, "interval", "i", time.Second, "time between packets")
-	rootCmd.Flags().BoolVar(&NoColor, "no-color", false, "disable colorized output")
-	rootCmd.Flags().BoolVar(&NoRTT, "no-rtt", false, "do not record RTTs (reduces memory use for long sessions)")
+	rootCmd.Flags().BoolVarP(&NoColor, "no-color", "x", false, "disable colorized output")
+	rootCmd.Flags().BoolVarP(&NoRTT, "no-rtt", "n", false, "do not record RTTs (reduces memory use for long sessions)")
 	rootCmd.Flags().StringVarP(&Output, "output", "o", "", "write to the specified file as well as stdout")
-	rootCmd.Flags().BoolVar(&Privileged, "privileged", false, "run as privileged user (needed on Windows)")
+	rootCmd.Flags().BoolVarP(&Privileged, "privileged", "p", false, "run as privileged user (needed on Windows)")
 	rootCmd.Flags().BoolVarP(&Quiet, "quiet", "q", false, "only display summary at end")
 	rootCmd.Flags().IntVarP(&Size, "size", "s", 56, "size of packets, in bytes")
-	rootCmd.Flags().DurationVarP(&Timeout, "timeout", "t", time.Minute*15, "connection timeout")
-	rootCmd.Flags().BoolVar(&Timestamp, "timestamp", false, "prepend timestamps to output")
+	rootCmd.Flags().DurationVarP(&Timeout, "timeout", "w", time.Minute*15, "connection timeout")
+	rootCmd.Flags().BoolVarP(&Timestamp, "timestamp", "t", false, "prepend timestamps to output")
 
 	rootCmd.Flags().Lookup("output").NoOptDefVal = "<hostname>.log"
 }
