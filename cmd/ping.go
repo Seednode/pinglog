@@ -70,12 +70,12 @@ func pingCmd(arguments []string) {
 		color.NoColor = true
 	}
 
-	var lastReceivedPacket = 0
-
 	blue := color.New(color.FgBlue)
 	green := color.New(color.FgGreen)
 	grey := color.New(color.FgHiBlack)
 	red := color.New(color.FgRed)
+
+	var lastReceivedPacket = 0
 
 	myPing.OnRecv = func(pkt *ping.Packet) {
 		currentPacket := pkt.Seq
