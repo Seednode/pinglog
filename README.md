@@ -1,14 +1,14 @@
-# A slightly improved ping(8)
+# A slightly improved `ping(8)`
 
 ![example output](https://git.seedno.de/seednode/pinglog/raw/branch/master/example.png)
 
 ## About
-Over the years, I've written a number of bash wrappers on top of ping(8), to add things like timestamps, logging, or trying to determine which packets in a sequence were dropped or otherwise lost. 
+Over the years, I've written a number of bash wrappers on top of `ping(8)`, to add things like timestamps, logging, or trying to determine which packets in a sequence were dropped or otherwise lost. 
 
 As part of a recent project, I've been converting my old shell scripts to Go, and this was next in the list.
 
 ## Features
-Added features compared to ping(8) include:
+Added features compared to `ping(8)` include:
 - Prepending timestamps
 - Displaying dropped packets
 - Specifying intervals in (s|ms|us|ns)
