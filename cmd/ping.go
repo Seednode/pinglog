@@ -76,16 +76,19 @@ func pingCmd(arguments []string) {
 	grey := color.New(color.FgHiBlack)
 	red := color.New(color.FgRed)
 
-	var lastReceivedPacket = 0
+	var expectedPacket = 0
+	var currentPacket = 0
 
 	myPing.OnRecv = func(pkt *ping.Packet) {
-		currentPacket := pkt.Seq
+		currentPacket = pkt.Seq
 
-		if Dropped && (lastReceivedPacket != currentPacket) {
-			for c := lastReceivedPacket + 1; c < currentPacket; c++ {
-				fmt.Printf("Packet %v dropped or arrived out of order.\n", c)
+		if Dropped && (expectedPacket != currentPacket) {
+			for c := expectedPacket; c < currentPacket; c++ {
+				red.Printf("Packet %v lost or arrived out of order.\n", c)
 			}
-			lastReceivedPacket = currentPacket
+			expectedPacket = currentPacket + 1
+		} else if Dropped {
+			expectedPacket = currentPacket + 1
 		}
 
 		if Quiet {
@@ -141,6 +144,12 @@ func pingCmd(arguments []string) {
 
 	myPing.OnFinish = func(stats *ping.Statistics) {
 		runTime := time.Since(startTime)
+
+		if Dropped && (Count != -1) && (currentPacket != (Count - 1)) {
+			for c := currentPacket + 1; c < Count; c++ {
+				red.Printf("Packet %v lost or arrived out of order.\n", c)
+			}
+		}
 
 		fmt.Printf("\n--- %v ping statistics ---\n", green.Sprintf(stats.Addr))
 
