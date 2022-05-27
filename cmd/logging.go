@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"os"
 )
 
@@ -22,13 +23,13 @@ func logOutput(logFile string) func() {
 
 		err := os.Remove(logFile)
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 	}
 
 	logFilePtr, err := os.OpenFile(logFile, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	out := os.Stdout
@@ -37,7 +38,7 @@ func logOutput(logFile string) func() {
 
 	reader, writer, err := os.Pipe()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	os.Stdout = writer

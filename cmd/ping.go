@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"time"
@@ -47,7 +48,7 @@ func pingCmd(arguments []string) {
 
 	myPing, err := ping.NewPinger(host)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	c := make(chan os.Signal, 1)
@@ -180,6 +181,6 @@ func pingCmd(arguments []string) {
 
 	err = myPing.Run()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }
