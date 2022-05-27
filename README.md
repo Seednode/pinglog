@@ -1,6 +1,6 @@
 # A slightly improved ping(8)
 
-[example output](https://git.seedno.de/seednode/pinglog/raw/branch/master/example.png)
+![example output](https://git.seedno.de/seednode/pinglog/raw/branch/master/example.png)
 
 ## About
 Over the years, I've written a number of bash wrappers on top of ping(8), to add things like timestamps, logging, or trying to determine which packets in a sequence were dropped or otherwise lost. 
