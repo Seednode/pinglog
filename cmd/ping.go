@@ -87,7 +87,7 @@ func pingCmd(arguments []string) {
 
 		if Dropped && (expectedPacket != currentPacket) {
 			for c := expectedPacket; c < currentPacket; c++ {
-				red.Printf("Packet %v lost or arrived out of order.\n", c)
+				fmt.Printf("%v", red.Sprintf("Packet %v lost or arrived out of order.\n", c))
 			}
 			expectedPacket = currentPacket + 1
 		} else if Dropped {
@@ -107,15 +107,18 @@ func pingCmd(arguments []string) {
 				blue.Sprintf("%v", pkt.Seq),
 				blue.Sprintf("%v", pkt.Ttl),
 				blue.Sprintf("%v", pkt.Rtt.Truncate(time.Microsecond)))
-			return
+		} else {
+			fmt.Printf("%v from %v: icmp_seq=%v ttl=%v time=%v\n",
+				blue.Sprintf("%v bytes", (pkt.Nbytes-8)),
+				blue.Sprintf("%v", pkt.IPAddr),
+				blue.Sprintf("%v", pkt.Seq),
+				blue.Sprintf("%v", pkt.Ttl),
+				blue.Sprintf("%v", pkt.Rtt.Truncate(time.Microsecond)))
 		}
 
-		fmt.Printf("%v from %v: icmp_seq=%v ttl=%v time=%v\n",
-			blue.Sprintf("%v bytes", (pkt.Nbytes-8)),
-			blue.Sprintf("%v", pkt.IPAddr),
-			blue.Sprintf("%v", pkt.Seq),
-			blue.Sprintf("%v", pkt.Ttl),
-			blue.Sprintf("%v", pkt.Rtt.Truncate(time.Microsecond)))
+		if currentPacket == (Count - 1) {
+			myPing.Stop()
+		}
 	}
 
 	myPing.OnDuplicateRecv = func(pkt *ping.Packet) {
@@ -150,7 +153,7 @@ func pingCmd(arguments []string) {
 
 		if !wasInterrupted && Dropped && (Count != -1) && (currentPacket != (Count - 1)) {
 			for c := currentPacket + 1; c < Count; c++ {
-				red.Printf("Packet %v lost or arrived out of order.\n", c)
+				fmt.Printf("%v", red.Sprintf("Packet %v lost or arrived out of order.\n", c))
 			}
 		}
 
@@ -168,12 +171,9 @@ func pingCmd(arguments []string) {
 			blue.Sprintf("%v", stats.MaxRtt.Truncate(time.Microsecond)),
 			blue.Sprintf("%v", stats.StdDevRtt.Truncate(time.Microsecond)))
 
-		sentBytes := int(stats.PacketsSent * myPing.Size)
-		receivedBytes := int(stats.PacketsRecv * myPing.Size)
-
 		fmt.Printf("\n%v%v\n%v%v\n",
-			"Sent = ", blue.Sprintf(humanReadableSize(sentBytes)),
-			"Recv = ", blue.Sprintf(humanReadableSize(receivedBytes)),
+			"Sent = ", blue.Sprintf(humanReadableSize(stats.PacketsSent*myPing.Size)),
+			"Recv = ", blue.Sprintf(humanReadableSize(stats.PacketsRecv*myPing.Size)),
 		)
 	}
 

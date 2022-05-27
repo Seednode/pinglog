@@ -13,6 +13,7 @@ import (
 
 var Count int
 var Dropped bool
+var ForceOverwrite bool
 var Interval time.Duration
 var NoColor bool
 var NoRTT bool
@@ -42,6 +43,7 @@ func Execute() {
 func init() {
 	rootCmd.Flags().IntVarP(&Count, "count", "c", -1, "number of packets to send")
 	rootCmd.Flags().BoolVar(&Dropped, "dropped", false, "log dropped packets")
+	rootCmd.Flags().BoolVarP(&ForceOverwrite, "force", "f", false, "overwrite log file without prompting")
 	rootCmd.Flags().DurationVarP(&Interval, "interval", "i", time.Second, "time between packets")
 	rootCmd.Flags().BoolVar(&NoColor, "no-color", false, "disable colorized output")
 	rootCmd.Flags().BoolVar(&NoRTT, "no-rtt", false, "do not record RTTs (reduces memory use for long sessions)")

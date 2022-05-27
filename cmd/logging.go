@@ -11,7 +11,7 @@ import (
 
 func logOutput(logFile string) func() {
 	_, err := os.Stat(logFile)
-	if !errors.Is(err, os.ErrNotExist) {
+	if !errors.Is(err, os.ErrNotExist) && !ForceOverwrite {
 		fmt.Print("File " + logFile + " already exists. Remove? (y/N) ")
 
 		input := bufio.NewScanner(os.Stdin)
@@ -21,6 +21,11 @@ func logOutput(logFile string) func() {
 			os.Exit(1)
 		}
 
+		err := os.Remove(logFile)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else if errors.Is(err, os.ErrNotExist) && ForceOverwrite {
 		err := os.Remove(logFile)
 		if err != nil {
 			log.Fatal(err)
