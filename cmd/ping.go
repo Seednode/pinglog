@@ -46,6 +46,8 @@ func humanReadableSize(bytes int) string {
 func pingCmd(arguments []string) {
 	host := arguments[0]
 
+	var wasInterrupted = false
+
 	myPing, err := ping.NewPinger(host)
 	if err != nil {
 		log.Fatal(err)
@@ -56,6 +58,7 @@ func pingCmd(arguments []string) {
 	go func() {
 		for {
 			<-c
+			wasInterrupted = true
 			myPing.Stop()
 		}
 	}()
@@ -145,7 +148,7 @@ func pingCmd(arguments []string) {
 	myPing.OnFinish = func(stats *ping.Statistics) {
 		runTime := time.Since(startTime)
 
-		if Dropped && (Count != -1) && (currentPacket != (Count - 1)) {
+		if !wasInterrupted && Dropped && (Count != -1) && (currentPacket != (Count - 1)) {
 			for c := currentPacket + 1; c < Count; c++ {
 				red.Printf("Packet %v lost or arrived out of order.\n", c)
 			}
