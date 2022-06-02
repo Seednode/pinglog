@@ -17,6 +17,16 @@ Added features compared to `ping(8)` include:
 - Logging to a file
 - Colorized output
 
+## Color
+For colorized output to work on Windows 10 with Powershell prior to v7.2.2, you need to enable VT support. This can be done (persistently and globally) in the following ways:
+
+- From Powershell, by running `Set-ItemProperty HKCU:\Console VirtualTerminalLevel -Type DWORD 1`
+- From Command Prompt, by running `reg add HKCU\Console /v VirtualTerminalLevel /t REG_DWORD /d 1`
+
+Either method requires a new terminal session to take effect.
+
+Support on older versions is not guaranteed.
+
 ## Usage output
 ```
 Usage:
@@ -30,11 +40,42 @@ Available Commands:
 
 Flags:
   -c, --count int                          number of packets to send (default -1)
+  -C, --color                              enable colorized output
+  -d, --dropped                            log dropped packets
+  -f, --force                              overwrite log file without prompting
+  -i, --interval duration                  time between packets (default 1s)
+  -n, --no-rtt                             do not record RTTs (reduces memory use for long sessions)
+  -o, --output string[="<hostname>.log"]   write to the specified file as well as stdout
+  -p, --privileged                         run as privileged user (always enabled on Windows)
+  -q, --quiet                              only display summary at end
+  -s, --size int                           size of packets, in bytes (default 56)
+  -t, --timestamp                          prepend timestamps to output
+  -w, --timeout duration                   connection timeout (default 15m0s)
+  -h, --help                               help for pinglog
+
+Use "pinglog [command] --help" for more information about a command.
+
+exit status 1
+
+╭─    ~/golang/pinglog  on   master !3                                                                          1 ✘  with sinc@lasciel  at 14:27:52  
+╰─❯ go run main.go
+Error: accepts 1 arg(s), received 0
+Usage:
+  pinglog [flags] <host>
+  pinglog [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  help        Help about any command
+  version     Print version
+
+Flags:
+  -C, --color                              enable colorized output
+  -c, --count int                          number of packets to send (default -1)
   -d, --dropped                            log dropped packets
   -f, --force                              overwrite log file without prompting
   -h, --help                               help for pinglog
   -i, --interval duration                  time between packets (default 1s)
-  -x, --no-color                           disable colorized output
   -n, --no-rtt                             do not record RTTs (reduces memory use for long sessions)
   -o, --output string[="<hostname>.log"]   write to the specified file as well as stdout
   -p, --privileged                         run as privileged user (always enabled on Windows)

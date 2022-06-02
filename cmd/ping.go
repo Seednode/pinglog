@@ -78,7 +78,10 @@ func pingCmd(arguments []string) {
 		myPing.SetPrivileged(Privileged)
 	}
 
-	if NoColor {
+	switch Color {
+	case true:
+		color.NoColor = false
+	default:
 		color.NoColor = true
 	}
 

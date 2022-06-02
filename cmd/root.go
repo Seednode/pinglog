@@ -5,6 +5,7 @@ Copyright © 2022 Seednode <seednode@seedno.de>
 package cmd
 
 import (
+	"math"
 	"os"
 	"time"
 
@@ -15,7 +16,7 @@ var Count int
 var Dropped bool
 var ForceOverwrite bool
 var Interval time.Duration
-var NoColor bool
+var Color bool
 var NoRTT bool
 var Output string
 var Privileged bool
@@ -42,16 +43,16 @@ func Execute() {
 
 func init() {
 	rootCmd.Flags().IntVarP(&Count, "count", "c", -1, "number of packets to send")
+	rootCmd.Flags().BoolVarP(&Color, "color", "C", false, "enable colorized output")
 	rootCmd.Flags().BoolVarP(&Dropped, "dropped", "d", false, "log dropped packets")
 	rootCmd.Flags().BoolVarP(&ForceOverwrite, "force", "f", false, "overwrite log file without prompting")
 	rootCmd.Flags().DurationVarP(&Interval, "interval", "i", time.Second, "time between packets")
-	rootCmd.Flags().BoolVarP(&NoColor, "no-color", "x", false, "disable colorized output")
 	rootCmd.Flags().BoolVarP(&NoRTT, "no-rtt", "n", false, "do not record RTTs (reduces memory use for long sessions)")
 	rootCmd.Flags().StringVarP(&Output, "output", "o", "", "write to the specified file as well as stdout")
 	rootCmd.Flags().BoolVarP(&Privileged, "privileged", "p", false, "run as privileged user (always enabled on Windows)")
 	rootCmd.Flags().BoolVarP(&Quiet, "quiet", "q", false, "only display summary at end")
 	rootCmd.Flags().IntVarP(&Size, "size", "s", 56, "size of packets, in bytes")
-	rootCmd.Flags().DurationVarP(&Timeout, "timeout", "w", time.Minute*15, "connection timeout")
+	rootCmd.Flags().DurationVarP(&Timeout, "timeout", "w", time.Duration(math.MaxInt64), "connection timeout")
 	rootCmd.Flags().BoolVarP(&Timestamp, "timestamp", "t", false, "prepend timestamps to output")
 
 	rootCmd.Flags().Lookup("output").NoOptDefVal = "<hostname>.log"
