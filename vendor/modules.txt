@@ -1,3 +1,6 @@
+# github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d
+## explicit
+github.com/acarl005/stripansi
 # github.com/fatih/color v1.13.0
 ## explicit; go 1.13
 github.com/fatih/color
