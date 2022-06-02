@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"runtime"
 	"time"
 
 	"github.com/fatih/color"
@@ -68,7 +69,14 @@ func pingCmd(arguments []string) {
 	myPing.Interval = Interval
 	myPing.Timeout = Timeout
 	myPing.RecordRtts = !(NoRTT)
-	myPing.SetPrivileged(Privileged)
+
+	// privileged is required on windows
+	switch runtime.GOOS {
+	case "windows":
+		myPing.SetPrivileged(true)
+	default:
+		myPing.SetPrivileged(Privileged)
+	}
 
 	if NoColor {
 		color.NoColor = true
