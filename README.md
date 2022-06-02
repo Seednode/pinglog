@@ -37,7 +37,7 @@ Flags:
   -x, --no-color                           disable colorized output
   -n, --no-rtt                             do not record RTTs (reduces memory use for long sessions)
   -o, --output string[="<hostname>.log"]   write to the specified file as well as stdout
-  -p, --privileged                         run as privileged user (needed on Windows)
+  -p, --privileged                         run as privileged user (always enabled on Windows)
   -q, --quiet                              only display summary at end
   -s, --size int                           size of packets, in bytes (default 56)
   -w, --timeout duration                   connection timeout (default 15m0s)
