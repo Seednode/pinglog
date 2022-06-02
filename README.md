@@ -28,6 +28,8 @@ Either method requires a new terminal session to take effect.
 
 Support on older versions is not guaranteed.
 
+Colors can be stripped from log files via the `strip` subcommand, e.g. `pinglog strip file.log`.
+
 ## Usage output
 ```
 Usage:
@@ -37,6 +39,7 @@ Usage:
 Available Commands:
   completion  Generate the autocompletion script for the specified shell
   help        Help about any command
+  strip       Strip ANSI color codes from log file(s)
   version     Print version
 
 Flags:
