@@ -15,8 +15,6 @@ import (
 )
 
 func StripFile(logFile string) {
-	fmt.Println("Stripping file " + logFile)
-
 	file, err := os.Open(logFile)
 	if err != nil {
 		log.Fatal(err)
