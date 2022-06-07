@@ -1,3 +1,7 @@
+/*
+Copyright © 2022 Seednode <seednode@seedno.de>
+*/
+
 package cmd
 
 import (
@@ -70,7 +74,7 @@ func pingCmd(arguments []string) {
 	myPing.Timeout = Timeout
 	myPing.RecordRtts = !(NoRTT)
 
-	// privileged is required on windows
+	// privileged is required on Windows
 	switch runtime.GOOS {
 	case "windows":
 		myPing.SetPrivileged(true)

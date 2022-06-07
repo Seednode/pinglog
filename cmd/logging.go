@@ -1,3 +1,7 @@
+/*
+Copyright © 2022 Seednode <seednode@seedno.de>
+*/
+
 package cmd
 
 import (
