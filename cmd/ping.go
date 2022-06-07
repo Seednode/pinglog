@@ -102,14 +102,14 @@ func pingCmd(arguments []string) {
 			timeStamp := time.Now().Format(DATE)
 			fmt.Printf("%v | %v from %v: icmp_seq=%v ttl=%v time=%v\n",
 				grey.Sprintf(timeStamp),
-				blue.Sprintf("%v bytes", (pkt.Nbytes-8)),
+				blue.Sprintf("%v bytes", pkt.Nbytes-8),
 				blue.Sprintf("%v", pkt.IPAddr),
 				blue.Sprintf("%v", pkt.Seq),
 				blue.Sprintf("%v", pkt.Ttl),
 				blue.Sprintf("%v", pkt.Rtt.Truncate(time.Microsecond)))
 		} else {
 			fmt.Printf("%v from %v: icmp_seq=%v ttl=%v time=%v\n",
-				blue.Sprintf("%v bytes", (pkt.Nbytes-8)),
+				blue.Sprintf("%v bytes", pkt.Nbytes-8),
 				blue.Sprintf("%v", pkt.IPAddr),
 				blue.Sprintf("%v", pkt.Seq),
 				blue.Sprintf("%v", pkt.Ttl),
@@ -127,7 +127,7 @@ func pingCmd(arguments []string) {
 
 			fmt.Printf("%v | %v from %v: icmp_seq=%v ttl=%v time=%v %v\n",
 				grey.Sprintf(timeStamp),
-				blue.Sprintf("%v bytes", (pkt.Nbytes-8)),
+				blue.Sprintf("%v bytes", pkt.Nbytes-8),
 				blue.Sprintf("%v", pkt.IPAddr),
 				blue.Sprintf("%v", pkt.Seq),
 				blue.Sprintf("%v", pkt.Ttl),
@@ -138,7 +138,7 @@ func pingCmd(arguments []string) {
 		}
 
 		fmt.Printf("%v from %v: icmp_seq=%v ttl=%v time=%v %v\n",
-			blue.Sprintf("%v bytes", (pkt.Nbytes-8)),
+			blue.Sprintf("%v bytes", pkt.Nbytes-8),
 			blue.Sprintf("%v", pkt.IPAddr),
 			blue.Sprintf("%v", pkt.Seq),
 			blue.Sprintf("%v", pkt.Ttl),
