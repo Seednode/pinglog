@@ -9,6 +9,8 @@ As part of a recent project, I've been converting my old shell scripts to Go, an
 
 Built using [go-ping](https://pkg.go.dev/github.com/go-ping/ping).
 
+Builds available [here](https://cdn.seedno.de/builds/pinglog).
+
 ## Features
 Added features compared to `ping(8)` include:
 - Prepending timestamps
