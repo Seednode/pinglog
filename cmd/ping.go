@@ -100,7 +100,14 @@ func pingCmd(arguments []string) {
 	myPing.OnRecv = func(pkt *ping.Packet) {
 		currentPacket = pkt.Seq
 
-		if Dropped && (expectedPacket != currentPacket) {
+		if Dropped && Timestamp && (expectedPacket != currentPacket) {
+			for c := expectedPacket; c < currentPacket; c++ {
+				timeStamp := time.Now().Format(DATE)
+
+				fmt.Printf("%v | %v", grey.Sprintf(timeStamp), red.Sprintf("Packet %v lost or arrived out of order.\n", c))
+			}
+			expectedPacket = currentPacket + 1
+		} else if Dropped && (expectedPacket != currentPacket) {
 			for c := expectedPacket; c < currentPacket; c++ {
 				fmt.Printf("%v", red.Sprintf("Packet %v lost or arrived out of order.\n", c))
 			}
