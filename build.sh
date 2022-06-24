@@ -19,11 +19,11 @@ for platform in ${platforms[@]}; do
   GOOS="${platform_split[0]}"
   GOARCH="${platform_split[1]}"
   output_name="${package_name}-${GOOS}-${GOARCH}"
+  ld_flags='-s -w'
   if [ "${GOOS}" == "windows" ]; then
     output_name+=".exe"
+  elif [ "${GOOS}" == "linux" ] && [ "${GOARCH}" == "amd64" ]; then
+    ld_flags+=' -linkmode external -extldflags "-static"'
   fi
-  env GOOS="${GOOS}" GOARCH="${GOARCH}" go build -ldflags "-s -w" -o "builds/${output_name}"
-  if [ "${GOOS}" != "windows" ]; then
-    upx -q --brute "builds/${output_name}"
-  fi
+  env GOOS="${GOOS}" GOARCH="${GOARCH}" CC="/home/sinc/.nix-profile/bin/musl-gcc" go build -ldflags "${ld_flags}" -o "builds/${output_name}"
 done
