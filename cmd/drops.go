@@ -20,6 +20,6 @@ var droppedCmd = &cobra.Command{
 	},
 }
 
-func init() {
-	rootCmd.AddCommand(stripCmd)
-}
+//func init() {
+//	rootCmd.AddCommand(stripCmd)
+//}
