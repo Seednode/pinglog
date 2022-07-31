@@ -53,7 +53,7 @@ func init() {
 	rootCmd.Flags().StringVarP(&Output, "output", "o", "", "write to the specified file as well as stdout")
 	rootCmd.Flags().BoolVarP(&Privileged, "privileged", "p", false, "run as privileged user (always enabled on Windows)")
 	rootCmd.Flags().BoolVarP(&Quiet, "quiet", "q", false, "only display summary at end")
-	rootCmd.Flags().BoolVarP(&RTT, "rtt", "n", false, "record RTTs (can increase memory use for long sessions)")
+	rootCmd.Flags().BoolVarP(&RTT, "rtt", "r", false, "record RTTs (can increase memory use for long sessions)")
 	rootCmd.Flags().IntVarP(&Size, "size", "s", 56, "size of packets, in bytes")
 	rootCmd.Flags().DurationVarP(&Timeout, "timeout", "w", time.Duration(math.MaxInt64), "connection timeout")
 	rootCmd.Flags().BoolVarP(&Timestamp, "timestamp", "t", false, "prepend timestamps to output")
