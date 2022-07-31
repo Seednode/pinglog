@@ -83,7 +83,8 @@ func pingCmd(arguments []string) {
 	myPing.Size = Size
 	myPing.Interval = Interval
 	myPing.Timeout = Timeout
-	myPing.RecordRtts = !(NoRTT)
+	myPing.TTL = TTL
+	myPing.RecordRtts = RTT
 
 	// privileged is required on Windows
 	switch runtime.GOOS {
@@ -217,9 +218,11 @@ func pingCmd(arguments []string) {
 
 	startTime = time.Now()
 
-	fmt.Printf("PING %v (%v):\n",
+	fmt.Printf("PING %v (%v) %v(%v) bytes of data.\n",
 		green.Sprintf("%v", myPing.Addr()),
-		blue.Sprintf("%v", myPing.IPAddr()))
+		blue.Sprintf("%v", myPing.IPAddr()),
+		blue.Sprintf("%v", Size),
+		blue.Sprintf("%v", Size+28))
 
 	err = myPing.Run()
 	if err != nil {

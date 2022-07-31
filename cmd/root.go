@@ -18,13 +18,14 @@ var ForceOverwrite bool
 var Interval time.Duration
 var Color bool
 var MaxRTT time.Duration
-var NoRTT bool
 var Output string
 var Privileged bool
 var Quiet bool
+var RTT bool
 var Size int
 var Timeout time.Duration
 var Timestamp bool
+var TTL int
 
 var rootCmd = &cobra.Command{
 	Use:   "pinglog [flags] <host>",
@@ -49,13 +50,14 @@ func init() {
 	rootCmd.Flags().BoolVarP(&ForceOverwrite, "force", "f", false, "overwrite log file without prompting")
 	rootCmd.Flags().DurationVarP(&Interval, "interval", "i", time.Second, "time between packets")
 	rootCmd.Flags().DurationVarP(&MaxRTT, "max-rtt", "m", time.Hour, "colorize packets over this rtt")
-	rootCmd.Flags().BoolVarP(&NoRTT, "no-rtt", "n", false, "do not record RTTs (reduces memory use for long sessions)")
 	rootCmd.Flags().StringVarP(&Output, "output", "o", "", "write to the specified file as well as stdout")
 	rootCmd.Flags().BoolVarP(&Privileged, "privileged", "p", false, "run as privileged user (always enabled on Windows)")
 	rootCmd.Flags().BoolVarP(&Quiet, "quiet", "q", false, "only display summary at end")
+	rootCmd.Flags().BoolVarP(&RTT, "rtt", "n", false, "record RTTs (can increase memory use for long sessions)")
 	rootCmd.Flags().IntVarP(&Size, "size", "s", 56, "size of packets, in bytes")
 	rootCmd.Flags().DurationVarP(&Timeout, "timeout", "w", time.Duration(math.MaxInt64), "connection timeout")
 	rootCmd.Flags().BoolVarP(&Timestamp, "timestamp", "t", false, "prepend timestamps to output")
+	rootCmd.Flags().IntVarP(&TTL, "ttl", "T", 128, "max time to live")
 
 	rootCmd.Flags().Lookup("output").NoOptDefVal = "<hostname>.log"
 }
