@@ -134,17 +134,19 @@ func pingCmd(arguments []string) {
 
 		if Timestamp {
 			timeStamp := time.Now().Format(DATE)
-			fmt.Printf("%v | %v from %v: icmp_seq=%v time=%v\n",
+			fmt.Printf("%v | %v from %v: icmp_seq=%v ttl=%v time=%v\n",
 				grey.Sprintf(timeStamp),
 				blue.Sprintf("%v bytes", pkt.Nbytes-8),
 				blue.Sprintf("%v", pkt.IPAddr),
 				blue.Sprintf("%v", pkt.Seq),
+				blue.Sprintf("%v", pkt.Ttl),
 				highlightLongRTT(pkt.Rtt.Truncate(time.Microsecond)))
 		} else {
-			fmt.Printf("%v from %v: icmp_seq=%v time=%v\n",
+			fmt.Printf("%v from %v: icmp_seq=%v ttl=%v time=%v\n",
 				blue.Sprintf("%v bytes", pkt.Nbytes-8),
 				blue.Sprintf("%v", pkt.IPAddr),
 				blue.Sprintf("%v", pkt.Seq),
+				blue.Sprintf("%v", pkt.Ttl),
 				highlightLongRTT(pkt.Rtt.Truncate(time.Microsecond)))
 		}
 
@@ -157,21 +159,23 @@ func pingCmd(arguments []string) {
 		if Timestamp {
 			timeStamp := time.Now().Format(DATE)
 
-			fmt.Printf("%v | %v from %v: icmp_seq=%v time=%v %v\n",
+			fmt.Printf("%v | %v from %v: icmp_seq=%v ttl=%v time=%v %v\n",
 				grey.Sprintf(timeStamp),
 				blue.Sprintf("%v bytes", pkt.Nbytes-8),
 				blue.Sprintf("%v", pkt.IPAddr),
 				blue.Sprintf("%v", pkt.Seq),
+				blue.Sprintf("%v", pkt.Ttl),
 				highlightLongRTT(pkt.Rtt.Truncate(time.Microsecond)),
 				red.Sprintf("(DUP!)"))
 
 			return
 		}
 
-		fmt.Printf("%v from %v: icmp_seq=%v time=%v %v\n",
+		fmt.Printf("%v from %v: icmp_seq=%v ttl=%v time=%v %v\n",
 			blue.Sprintf("%v bytes", pkt.Nbytes-8),
 			blue.Sprintf("%v", pkt.IPAddr),
 			blue.Sprintf("%v", pkt.Seq),
+			blue.Sprintf("%v", pkt.Ttl),
 			highlightLongRTT(pkt.Rtt.Truncate(time.Microsecond)),
 			red.Sprintf("(DUP!)"))
 	}
