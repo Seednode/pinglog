@@ -53,7 +53,7 @@ Flags:
   -i, --interval duration                  time between packets (default 1s)
   -m, --max-rtt duration                   colorize packets over this rtt (default 1h0m0s)
   -o, --output string[="<hostname>.log"]   write to the specified file as well as stdout
-  -p, --privileged                         run as privileged user (always enabled on Windows)
+  -p, --privileged                         run in privileged mode (always enabled on Windows)
   -q, --quiet                              only display summary at end
   -r, --rtt                                record RTTs (can increase memory use for long sessions)
   -s, --size int                           size of packets, in bytes (default 56)
