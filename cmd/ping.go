@@ -30,6 +30,17 @@ func highlightPacketLoss(packetLoss float64) string {
 	return blue.Sprintf("%.3f%%", packetLoss)
 }
 
+func highlightLongRTT(packetRTT time.Duration) string {
+	blue := color.New(color.FgBlue)
+	red := color.New(color.FgRed)
+
+	if packetRTT > MaxRTT {
+		return red.Sprintf("%v", packetRTT)
+	} else {
+		return blue.Sprintf("%v", packetRTT)
+	}
+}
+
 func humanReadableSize(bytes int) string {
 	const unit = 1000
 
@@ -128,14 +139,14 @@ func pingCmd(arguments []string) {
 				blue.Sprintf("%v", pkt.IPAddr),
 				blue.Sprintf("%v", pkt.Seq),
 				blue.Sprintf("%v", pkt.Ttl),
-				blue.Sprintf("%v", pkt.Rtt.Truncate(time.Microsecond)))
+				highlightLongRTT(pkt.Rtt.Truncate(time.Microsecond)))
 		} else {
 			fmt.Printf("%v from %v: icmp_seq=%v ttl=%v time=%v\n",
 				blue.Sprintf("%v bytes", pkt.Nbytes-8),
 				blue.Sprintf("%v", pkt.IPAddr),
 				blue.Sprintf("%v", pkt.Seq),
 				blue.Sprintf("%v", pkt.Ttl),
-				blue.Sprintf("%v", pkt.Rtt.Truncate(time.Microsecond)))
+				highlightLongRTT(pkt.Rtt.Truncate(time.Microsecond)))
 		}
 
 		if currentPacket == (Count - 1) {
@@ -153,7 +164,7 @@ func pingCmd(arguments []string) {
 				blue.Sprintf("%v", pkt.IPAddr),
 				blue.Sprintf("%v", pkt.Seq),
 				blue.Sprintf("%v", pkt.Ttl),
-				blue.Sprintf("%v", pkt.Rtt.Truncate(time.Microsecond)),
+				highlightLongRTT(pkt.Rtt.Truncate(time.Microsecond)),
 				red.Sprintf("(DUP!)"))
 
 			return
@@ -164,7 +175,7 @@ func pingCmd(arguments []string) {
 			blue.Sprintf("%v", pkt.IPAddr),
 			blue.Sprintf("%v", pkt.Seq),
 			blue.Sprintf("%v", pkt.Ttl),
-			blue.Sprintf("%v", pkt.Rtt.Truncate(time.Microsecond)),
+			highlightLongRTT(pkt.Rtt.Truncate(time.Microsecond)),
 			red.Sprintf("(DUP!)"))
 	}
 
@@ -190,9 +201,9 @@ func pingCmd(arguments []string) {
 			blue.Sprintf("%v", runTime.Truncate(time.Millisecond)))
 
 		fmt.Printf("rtt min/avg/max/mdev = %v/%v/%v/%v\n\n",
-			blue.Sprintf("%v", stats.MinRtt.Truncate(time.Microsecond)),
-			blue.Sprintf("%v", stats.AvgRtt.Truncate(time.Microsecond)),
-			blue.Sprintf("%v", stats.MaxRtt.Truncate(time.Microsecond)),
+			highlightLongRTT(stats.MinRtt.Truncate(time.Microsecond)),
+			highlightLongRTT(stats.AvgRtt.Truncate(time.Microsecond)),
+			highlightLongRTT(stats.MaxRtt.Truncate(time.Microsecond)),
 			blue.Sprintf("%v", stats.StdDevRtt.Truncate(time.Microsecond)))
 	}
 

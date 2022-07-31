@@ -17,6 +17,7 @@ var Dropped bool
 var ForceOverwrite bool
 var Interval time.Duration
 var Color bool
+var MaxRTT time.Duration
 var NoRTT bool
 var Output string
 var Privileged bool
@@ -47,6 +48,7 @@ func init() {
 	rootCmd.Flags().BoolVarP(&Dropped, "dropped", "d", false, "log dropped packets")
 	rootCmd.Flags().BoolVarP(&ForceOverwrite, "force", "f", false, "overwrite log file without prompting")
 	rootCmd.Flags().DurationVarP(&Interval, "interval", "i", time.Second, "time between packets")
+	rootCmd.Flags().DurationVarP(&MaxRTT, "max-rtt", "m", time.Hour, "colorize packets over this rtt")
 	rootCmd.Flags().BoolVarP(&NoRTT, "no-rtt", "n", false, "do not record RTTs (reduces memory use for long sessions)")
 	rootCmd.Flags().StringVarP(&Output, "output", "o", "", "write to the specified file as well as stdout")
 	rootCmd.Flags().BoolVarP(&Privileged, "privileged", "p", false, "run as privileged user (always enabled on Windows)")
