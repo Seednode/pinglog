@@ -12,11 +12,11 @@ require (
 
 require (
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	golang.org/x/net v0.0.0-20220728211354-c7608f3a8462 // indirect
+	golang.org/x/net v0.0.0-20220805013720-a33c5aa5df48 // indirect
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
-	golang.org/x/sys v0.0.0-20220730100132-1609e554cd39 // indirect
+	golang.org/x/sys v0.0.0-20220804214406-8e32c043e418 // indirect
 )
