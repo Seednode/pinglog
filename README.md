@@ -15,7 +15,7 @@ Builds available [here](https://cdn.seedno.de/builds/pinglog).
 Added features compared to `ping(8)` include:
 - Prepending timestamps
 - Displaying dropped packets
-- Specifying intervals in (s|ms|us|ns)
+- Specifying intervals with units (h,m,s,ms,...ns)
 - Logging to a file
 - Colorized output
 
