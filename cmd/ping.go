@@ -91,8 +91,20 @@ func pingCmd(arguments []string) {
 	case "windows":
 		myPing.SetPrivileged(true)
 	default:
-		myPing.SetPrivileged(Privileged)
+		myPing.SetPrivileged(false)
 	}
+
+	switch {
+	case v4:
+		myPing.SetNetwork("ip4")
+	case v6:
+		myPing.SetNetwork("ip6")
+	default:
+		myPing.SetNetwork("ip")
+	}
+
+	// resolve to the specified protocol
+	myPing.Resolve()
 
 	switch Color {
 	case true:
