@@ -34,6 +34,8 @@ Colors can be stripped from log files via the `strip` subcommand, e.g. `pinglog 
 
 ## Usage output
 ```
+A more featureful ping tool.
+
 Usage:
   pinglog [flags] <host>
   pinglog [command]
@@ -51,6 +53,8 @@ Flags:
   -f, --force                              overwrite log file without prompting
   -h, --help                               help for pinglog
   -i, --interval duration                  time between packets (default 1s)
+  -4, --ipv4                               force dns resolution to ipv4
+  -6, --ipv6                               force dns resolution to ipv6
   -m, --max-rtt duration                   colorize packets over this rtt (default 1h0m0s)
   -o, --output string[="<hostname>.log"]   write to the specified file as well as stdout
   -p, --privileged                         run in privileged mode (always enabled on Windows)
