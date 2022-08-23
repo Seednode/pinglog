@@ -55,6 +55,7 @@ func init() {
 	rootCmd.Flags().BoolVarP(&IPv6, "ipv6", "6", false, "force dns resolution to ipv6")
 	rootCmd.Flags().DurationVarP(&MaxRTT, "max-rtt", "m", time.Hour, "colorize packets over this rtt")
 	rootCmd.Flags().StringVarP(&Output, "output", "o", "", "write to the specified file as well as stdout")
+	rootCmd.Flags().Lookup("output").NoOptDefVal = "<hostname>.log"
 	rootCmd.Flags().BoolVarP(&Privileged, "privileged", "p", false, "run in privileged mode (always enabled on Windows)")
 	rootCmd.Flags().BoolVarP(&Quiet, "quiet", "q", false, "only display summary at end")
 	rootCmd.Flags().BoolVarP(&RTT, "rtt", "r", false, "record RTTs (can increase memory use for long sessions)")
@@ -65,5 +66,4 @@ func init() {
 
 	rootCmd.MarkFlagsMutuallyExclusive("ipv4", "ipv6")
 	rootCmd.MarkFlagsMutuallyExclusive("color", "quiet")
-	rootCmd.Flags().Lookup("output").NoOptDefVal = "<hostname>.log"
 }

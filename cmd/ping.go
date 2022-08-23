@@ -102,8 +102,6 @@ func pingCmd(arguments []string) {
 	default:
 		myPing.SetNetwork("ip")
 	}
-
-	// resolve to the specified protocol
 	myPing.Resolve()
 
 	switch Color {
