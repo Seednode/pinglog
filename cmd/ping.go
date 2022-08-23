@@ -95,9 +95,9 @@ func pingCmd(arguments []string) {
 	}
 
 	switch {
-	case v4:
+	case IPv4:
 		myPing.SetNetwork("ip4")
-	case v6:
+	case IPv6:
 		myPing.SetNetwork("ip6")
 	default:
 		myPing.SetNetwork("ip")

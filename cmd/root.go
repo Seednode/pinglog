@@ -12,11 +12,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var Color bool
 var Count int
 var Dropped bool
 var ForceOverwrite bool
 var Interval time.Duration
-var Color bool
+var IPv4 bool
+var IPv6 bool
 var MaxRTT time.Duration
 var Output string
 var Privileged bool
@@ -26,8 +28,6 @@ var Size int
 var Timeout time.Duration
 var Timestamp bool
 var TTL int
-var v4 bool
-var v6 bool
 
 var rootCmd = &cobra.Command{
 	Use:   "pinglog [flags] <host>",
@@ -51,8 +51,8 @@ func init() {
 	rootCmd.Flags().BoolVarP(&Dropped, "dropped", "d", false, "log dropped packets")
 	rootCmd.Flags().BoolVarP(&ForceOverwrite, "force", "f", false, "overwrite log file without prompting")
 	rootCmd.Flags().DurationVarP(&Interval, "interval", "i", time.Second, "time between packets")
-	rootCmd.Flags().BoolVarP(&v4, "ipv4", "4", false, "force dns resolution to ipv4")
-	rootCmd.Flags().BoolVarP(&v6, "ipv6", "6", false, "force dns resolution to ipv6")
+	rootCmd.Flags().BoolVarP(&IPv4, "ipv4", "4", false, "force dns resolution to ipv4")
+	rootCmd.Flags().BoolVarP(&IPv6, "ipv6", "6", false, "force dns resolution to ipv6")
 	rootCmd.Flags().DurationVarP(&MaxRTT, "max-rtt", "m", time.Hour, "colorize packets over this rtt")
 	rootCmd.Flags().StringVarP(&Output, "output", "o", "", "write to the specified file as well as stdout")
 	rootCmd.Flags().BoolVarP(&Privileged, "privileged", "p", false, "run in privileged mode (always enabled on Windows)")
