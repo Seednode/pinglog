@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"net/netip"
 	"os"
-	"sort"
 	"strings"
 	"time"
 
@@ -20,42 +19,25 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type ChartData struct {
-	host      netip.Addr
-	timestamp time.Time
-	rtt       time.Duration
-}
-
-func calculateXAxisOld(slice []ChartData) (time.Time, time.Time) {
-	s := append([]ChartData{}, slice...)
-
-	sort.Slice(s, func(i, j int) bool {
-		return s[i].timestamp.Before(s[j].timestamp)
-	})
-
-	rangeStart := s[0].timestamp
-	rangeEnd := s[len(s)-1].timestamp
-
-	return rangeStart, rangeEnd
-}
-
-func calculateXAxis(slice []ChartData) []time.Time {
+func calculateXAxis(slice []time.Time) []time.Time {
 	r := []time.Time{}
 
 	for i := 0; i < len(slice); i++ {
-		r = append(r, slice[i].timestamp)
+		r = append(r, slice[i])
 	}
 
 	return r
 }
 
-// Receives log file, parses out values, and returns slice of ChartData
-func parseFile(logFile string) ([]ChartData, error) {
-	results := []ChartData{}
+func parseFile(logFile string) (string, netip.Addr, []time.Time, []time.Duration, error) {
+	var hostname string
+	var ipaddr netip.Addr
+	var timestamps []time.Time
+	var rtts []time.Duration
 
 	file, err := os.Open(logFile)
 	if err != nil {
-		return nil, err
+		return "", netip.Addr{}, nil, nil, err
 	}
 	defer func(file *os.File) error {
 		err := file.Close()
@@ -68,63 +50,57 @@ func parseFile(logFile string) ([]ChartData, error) {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		if strings.Contains(scanner.Text(), "|") && !strings.Contains(scanner.Text(), "lost or arrived out of order") {
-			data := ChartData{}
+		stripped := stripansi.Strip(scanner.Text())
 
-			fields := strings.Fields(stripansi.Strip(scanner.Text()))
+		if strings.Contains(stripped, "PING") {
+			fields := strings.Fields(stripped)
 
-			data.host, err = netip.ParseAddr(strings.TrimSuffix(fields[7], ":"))
+			hostname = fields[1]
+			ipaddr, err = netip.ParseAddr(strings.Trim(fields[2], "()"))
 			if err != nil {
-				return nil, err
+				return "", netip.Addr{}, nil, nil, err
 			}
+		}
 
-			t := fields[0] + " " + fields[1] + " " + fields[2]
-			data.timestamp, err = time.Parse(DATE, t)
+		if strings.Contains(stripped, "|") && !strings.Contains(stripped, "lost or arrived out of order") {
+			fields := strings.Fields(stripped)
+
+			t, err := time.Parse(DATE, fields[0]+" "+fields[1]+" "+fields[2])
 			if err != nil {
-				return nil, err
+				return "", netip.Addr{}, nil, nil, err
 			}
+			timestamps = append(timestamps, t)
 
-			data.rtt, err = time.ParseDuration(strings.TrimPrefix(fields[10], "time="))
+			r, err := time.ParseDuration(strings.TrimPrefix(fields[10], "time="))
 			if err != nil {
-				return nil, err
+				return "", netip.Addr{}, nil, nil, err
 			}
-
-			results = append(results, data)
+			rtts = append(rtts, r)
 		}
 	}
 
 	if err := scanner.Err(); err != nil {
-		return nil, err
+		return "", netip.Addr{}, nil, nil, err
 	}
 
-	return results, nil
+	return hostname, ipaddr, timestamps, rtts, nil
 }
 
 // generate random data for line chart
-func generateLineItems(data []ChartData) []opts.LineData {
+func generateLineItems(data []time.Duration) []opts.LineData {
 	items := make([]opts.LineData, 0)
 
 	for i := 0; i < len(data); i++ {
-		items = append(items, opts.LineData{Value: data[i].rtt})
+		items = append(items, opts.LineData{Value: data[i]})
 	}
 
 	return items
 }
 
 func createLineChart(args []string) {
-	parsed := []ChartData{}
-
-	for i := 0; i < len(args); i++ {
-		results, err := parseFile(args[i])
-		if err != nil {
-			panic(err)
-			// return err
-		}
-		parsed = append(parsed, results...)
-	}
-
-	for i := 0; i < len(parsed); i++ {
-		fmt.Println(parsed[i].rtt)
+	hostname, ipaddr, timestamps, rtts, err := parseFile(args[0])
+	if err != nil {
+		panic(err)
 	}
 
 	chart := charts.NewLine()
@@ -134,25 +110,26 @@ func createLineChart(args []string) {
 			Theme: types.ThemeInfographic,
 		}),
 		charts.WithTitleOpts(opts.Title{
-			Title:    "I'm not sure I'm doing this right",
-			Subtitle: "But I'll try anyway",
+			Title: fmt.Sprintf("Pings to %v (%v)", hostname, ipaddr.String()),
 		}),
 	)
 
-	chart.SetXAxis(calculateXAxis(parsed)).
-		AddSeries("RTTs", generateLineItems(parsed)).
+	chart.SetXAxis(calculateXAxis(timestamps)).
+		AddSeries("RTTs", generateLineItems(rtts)).
 		SetSeriesOptions((charts.WithLineChartOpts(opts.LineChart{Smooth: true})))
 
-	f, _ := os.Create("chart.html")
-	_ = chart.Render(f)
+	output, err := os.Create(args[1])
+	if err != nil {
+		panic(err)
+	}
 
-	//return nil
+	_ = chart.Render(output)
 }
 
 var graphCmd = &cobra.Command{
-	Use:   "graph <file1> [file2] .. [fileN]",
+	Use:   "graph <input file> <output file>",
 	Short: "Generate graph from log file",
-	Args:  cobra.ExactArgs(1),
+	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		createLineChart(args)
 	},
