@@ -7,15 +7,16 @@ package cmd
 import (
 	"bufio"
 	"fmt"
-	"math/rand"
 	"net/netip"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
 	"github.com/acarl005/stripansi"
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/opts"
+	"github.com/go-echarts/go-echarts/v2/types"
 	"github.com/spf13/cobra"
 )
 
@@ -25,34 +26,30 @@ type ChartData struct {
 	rtt       time.Duration
 }
 
-// generate random data for bar chart
-func generateBarItems() []opts.BarData {
-	items := make([]opts.BarData, 0)
-	for i := 0; i < 6; i++ {
-		items = append(items, opts.BarData{Value: rand.Intn(500)})
+func calculateXAxisOld(slice []ChartData) (time.Time, time.Time) {
+	s := append([]ChartData{}, slice...)
+
+	sort.Slice(s, func(i, j int) bool {
+		return s[i].timestamp.Before(s[j].timestamp)
+	})
+
+	rangeStart := s[0].timestamp
+	rangeEnd := s[len(s)-1].timestamp
+
+	return rangeStart, rangeEnd
+}
+
+func calculateXAxis(slice []ChartData) []time.Time {
+	r := []time.Time{}
+
+	for i := 0; i < len(slice); i++ {
+		r = append(r, slice[i].timestamp)
 	}
-	return items
+
+	return r
 }
 
-func createBarChart() {
-	// create a new bar instance
-	bar := charts.NewBar()
-
-	// Set global options
-	bar.SetGlobalOptions(charts.WithTitleOpts(opts.Title{
-		Title:    "Bar chart in Go",
-		Subtitle: "This is fun to use!",
-	}))
-
-	// Put data into instance
-	bar.SetXAxis([]string{"Jan", "Feb", "Mar", "Apr", "May", "Jun"}).
-		AddSeries("Category A", generateBarItems()).
-		AddSeries("Category B", generateBarItems())
-	f, _ := os.Create("bar.html")
-	_ = bar.Render(f)
-}
-
-// Receives log file and pointer to slice, parses out values from log file, and returns slice of ChartData
+// Receives log file, parses out values, and returns slice of ChartData
 func parseFile(logFile string) ([]ChartData, error) {
 	results := []ChartData{}
 
@@ -71,7 +68,7 @@ func parseFile(logFile string) ([]ChartData, error) {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		if strings.Contains(scanner.Text(), "|") {
+		if strings.Contains(scanner.Text(), "|") && !strings.Contains(scanner.Text(), "lost or arrived out of order") {
 			data := ChartData{}
 
 			fields := strings.Fields(stripansi.Strip(scanner.Text()))
@@ -103,7 +100,18 @@ func parseFile(logFile string) ([]ChartData, error) {
 	return results, nil
 }
 
-func createScatterChart(args []string) {
+// generate random data for line chart
+func generateLineItems(data []ChartData) []opts.LineData {
+	items := make([]opts.LineData, 0)
+
+	for i := 0; i < len(data); i++ {
+		items = append(items, opts.LineData{Value: data[i].rtt})
+	}
+
+	return items
+}
+
+func createLineChart(args []string) {
 	parsed := []ChartData{}
 
 	for i := 0; i < len(args); i++ {
@@ -119,15 +127,24 @@ func createScatterChart(args []string) {
 		fmt.Println(parsed[i].rtt)
 	}
 
-	fmt.Println("Exiting")
-	os.Exit(0)
+	chart := charts.NewLine()
 
-	chart := charts.NewScatter()
+	chart.SetGlobalOptions(
+		charts.WithInitializationOpts(opts.Initialization{
+			Theme: types.ThemeInfographic,
+		}),
+		charts.WithTitleOpts(opts.Title{
+			Title:    "I'm not sure I'm doing this right",
+			Subtitle: "But I'll try anyway",
+		}),
+	)
 
-	chart.SetGlobalOptions(charts.WithTitleOpts(opts.Title{
-		Title:    "I'm not sure I'm doing this right",
-		Subtitle: "But I'll try anyway",
-	}))
+	chart.SetXAxis(calculateXAxis(parsed)).
+		AddSeries("RTTs", generateLineItems(parsed)).
+		SetSeriesOptions((charts.WithLineChartOpts(opts.LineChart{Smooth: true})))
+
+	f, _ := os.Create("chart.html")
+	_ = chart.Render(f)
 
 	//return nil
 }
@@ -137,7 +154,7 @@ var graphCmd = &cobra.Command{
 	Short: "Generate graph from log file",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		createScatterChart(args)
+		createLineChart(args)
 	},
 }
 
