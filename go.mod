@@ -7,6 +7,7 @@ require github.com/spf13/cobra v1.5.0
 require (
 	github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d
 	github.com/fatih/color v1.13.0
+	github.com/go-echarts/go-echarts/v2 v2.2.4
 	github.com/go-ping/ping v1.1.0
 )
 

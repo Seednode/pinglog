@@ -4,6 +4,14 @@ github.com/acarl005/stripansi
 # github.com/fatih/color v1.13.0
 ## explicit; go 1.13
 github.com/fatih/color
+# github.com/go-echarts/go-echarts/v2 v2.2.4
+## explicit; go 1.15
+github.com/go-echarts/go-echarts/v2/charts
+github.com/go-echarts/go-echarts/v2/datasets
+github.com/go-echarts/go-echarts/v2/opts
+github.com/go-echarts/go-echarts/v2/render
+github.com/go-echarts/go-echarts/v2/templates
+github.com/go-echarts/go-echarts/v2/types
 # github.com/go-ping/ping v1.1.0
 ## explicit; go 1.14
 github.com/go-ping/ping
