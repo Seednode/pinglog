@@ -235,6 +235,7 @@ func pingCmd(arguments []string) {
 		blue.Sprintf("%v", Size+28))
 
 	err = myPing.Run()
+
 	if err != nil {
 		log.Fatal(err)
 	}

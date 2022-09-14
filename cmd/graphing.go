@@ -18,16 +18,6 @@ import (
 	"github.com/wcharczuk/go-chart"
 )
 
-func calculateXAxis(slice []time.Time) []time.Time {
-	r := []time.Time{}
-
-	for i := 0; i < len(slice); i++ {
-		r = append(r, slice[i])
-	}
-
-	return r
-}
-
 func parseFile(logFile string) (string, netip.Addr, []time.Time, []float64, error) {
 	var hostname string
 	var ipaddr netip.Addr
@@ -93,7 +83,7 @@ func createLineChart(args []string) {
 	}
 
 	graph := chart.Chart{
-		Title:      fmt.Sprintf("Pings to %v (%v):", hostname, ipaddr),
+		Title:      fmt.Sprintf("%v (%v)", hostname, ipaddr),
 		TitleStyle: chart.Style{Show: true},
 		Background: chart.Style{
 			Padding: chart.Box{
@@ -117,6 +107,9 @@ func createLineChart(args []string) {
 				return ""
 			},
 		},
+		Width:  4096,
+		Height: 2160,
+		DPI:    300.0,
 		Series: []chart.Series{
 			chart.TimeSeries{
 				Style: chart.Style{
