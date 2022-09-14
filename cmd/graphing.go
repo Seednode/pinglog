@@ -7,16 +7,15 @@ package cmd
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"net/netip"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/acarl005/stripansi"
-	"github.com/go-echarts/go-echarts/v2/charts"
-	"github.com/go-echarts/go-echarts/v2/opts"
-	"github.com/go-echarts/go-echarts/v2/types"
 	"github.com/spf13/cobra"
+	"github.com/wcharczuk/go-chart"
 )
 
 func calculateXAxis(slice []time.Time) []time.Time {
@@ -29,11 +28,11 @@ func calculateXAxis(slice []time.Time) []time.Time {
 	return r
 }
 
-func parseFile(logFile string) (string, netip.Addr, []time.Time, []time.Duration, error) {
+func parseFile(logFile string) (string, netip.Addr, []time.Time, []float64, error) {
 	var hostname string
 	var ipaddr netip.Addr
 	var timestamps []time.Time
-	var rtts []time.Duration
+	var rtts []float64
 
 	file, err := os.Open(logFile)
 	if err != nil {
@@ -72,10 +71,11 @@ func parseFile(logFile string) (string, netip.Addr, []time.Time, []time.Duration
 			timestamps = append(timestamps, t)
 
 			r, err := time.ParseDuration(strings.TrimPrefix(fields[10], "time="))
+			p := r.Milliseconds()
 			if err != nil {
 				return "", netip.Addr{}, nil, nil, err
 			}
-			rtts = append(rtts, r)
+			rtts = append(rtts, float64(p))
 		}
 	}
 
@@ -86,44 +86,58 @@ func parseFile(logFile string) (string, netip.Addr, []time.Time, []time.Duration
 	return hostname, ipaddr, timestamps, rtts, nil
 }
 
-// generate random data for line chart
-func generateLineItems(data []time.Duration) []opts.LineData {
-	items := make([]opts.LineData, 0)
-
-	for i := 0; i < len(data); i++ {
-		items = append(items, opts.LineData{Value: data[i]})
-	}
-
-	return items
-}
-
 func createLineChart(args []string) {
 	hostname, ipaddr, timestamps, rtts, err := parseFile(args[0])
 	if err != nil {
 		panic(err)
 	}
 
-	chart := charts.NewLine()
-
-	chart.SetGlobalOptions(
-		charts.WithInitializationOpts(opts.Initialization{
-			Theme: types.ThemeInfographic,
-		}),
-		charts.WithTitleOpts(opts.Title{
-			Title: fmt.Sprintf("Pings to %v (%v)", hostname, ipaddr.String()),
-		}),
-	)
-
-	chart.SetXAxis(calculateXAxis(timestamps)).
-		AddSeries("RTTs", generateLineItems(rtts)).
-		SetSeriesOptions((charts.WithLineChartOpts(opts.LineChart{Smooth: true})))
+	graph := chart.Chart{
+		Title:      fmt.Sprintf("Pings to %v (%v):", hostname, ipaddr),
+		TitleStyle: chart.Style{Show: true},
+		Background: chart.Style{
+			Padding: chart.Box{
+				Top: 100,
+			},
+		},
+		XAxis: chart.XAxis{
+			Name:           "Time",
+			NameStyle:      chart.Style{Show: true},
+			Style:          chart.Style{Show: true},
+			ValueFormatter: chart.TimeMinuteValueFormatter,
+		},
+		YAxis: chart.YAxis{
+			Name:      "Round-trip time (ms)",
+			NameStyle: chart.Style{Show: true},
+			Style:     chart.Style{Show: true},
+			ValueFormatter: func(v interface{}) string {
+				if vf, isFloat := v.(float64); isFloat {
+					return fmt.Sprint(math.Round(vf))
+				}
+				return ""
+			},
+		},
+		Series: []chart.Series{
+			chart.TimeSeries{
+				Style: chart.Style{
+					Show: true,
+				},
+				XValues: timestamps,
+				YValues: rtts,
+			},
+		},
+	}
 
 	output, err := os.Create(args[1])
 	if err != nil {
 		panic(err)
 	}
+	defer output.Close()
 
-	_ = chart.Render(output)
+	err = graph.Render(chart.PNG, output)
+	if err != nil {
+		panic(err)
+	}
 }
 
 var graphCmd = &cobra.Command{
