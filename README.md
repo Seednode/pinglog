@@ -47,6 +47,7 @@ Available Commands:
   version     Print version
 
 Flags:
+  -b, --beep                               enable audible bell for exceeded max-rtt
   -C, --color                              enable colorized output
   -c, --count int                          number of packets to send (default -1)
   -d, --dropped                            log dropped packets
