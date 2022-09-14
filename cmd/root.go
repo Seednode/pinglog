@@ -12,6 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var Beep bool
 var Color bool
 var Count int
 var Dropped bool
@@ -46,6 +47,7 @@ func Execute() {
 }
 
 func init() {
+	rootCmd.Flags().BoolVarP(&Beep, "beep", "b", false, "enable audible bell for exceeded max-rtt")
 	rootCmd.Flags().BoolVarP(&Color, "color", "C", false, "enable colorized output")
 	rootCmd.Flags().IntVarP(&Count, "count", "c", -1, "number of packets to send")
 	rootCmd.Flags().BoolVarP(&Dropped, "dropped", "d", false, "log dropped packets")

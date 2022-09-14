@@ -88,7 +88,7 @@ func CalculateLoss(logFile string) error {
 			if lostPackets == 1 {
 				fmt.Printf("%v\n", endTime)
 			} else {
-				fmt.Printf("%v => %v [%v packet(s) lost]\n", startTime, endTime, lostPackets)
+				fmt.Printf("%v => %v [%v packets lost]\n", startTime, endTime, lostPackets)
 			}
 
 			lastHadLoss = false
