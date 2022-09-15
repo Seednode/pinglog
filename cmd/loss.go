@@ -117,7 +117,7 @@ func Loss(arguments []string) {
 }
 
 var lossCmd = &cobra.Command{
-	Use:   "loss <file1> [file2]...",
+	Use:   "loss file1 [file2]...",
 	Short: "Calculate periods of packet loss from log file(s)",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {

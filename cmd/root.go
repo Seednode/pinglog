@@ -31,7 +31,7 @@ var Timestamp bool
 var TTL int
 
 var rootCmd = &cobra.Command{
-	Use:   "pinglog [flags] <host>",
+	Use:   "pinglog [flags] host",
 	Short: "A more featureful ping tool.",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
