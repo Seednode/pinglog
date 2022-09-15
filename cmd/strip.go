@@ -14,15 +14,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func StripFile(logFile string) {
-	file, err := os.Open(logFile)
+func StripColors(args []string) {
+	file, err := os.Open(args[0])
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer func(file *os.File) {
 		err := file.Close()
 		if err != nil {
-			fmt.Println(err)
+			log.Fatal(err)
 		}
 	}(file)
 
@@ -37,16 +37,10 @@ func StripFile(logFile string) {
 	}
 }
 
-func StripColors(arguments []string) {
-	for file := 0; file < len(arguments); file++ {
-		StripFile(arguments[file])
-	}
-}
-
 var stripCmd = &cobra.Command{
-	Use:   "strip <file1> [file2]...",
-	Short: "Strip ANSI color codes from log file(s)",
-	Args:  cobra.MinimumNArgs(1),
+	Use:   "strip file",
+	Short: "Strip ANSI color codes from log file",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		StripColors(args)
 	},
