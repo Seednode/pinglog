@@ -223,10 +223,16 @@ func pingCmd(arguments []string) {
 	}
 
 	if Output == "<hostname>.log" {
-		endLogging := logOutput(host + ".log")
+		endLogging, err := logOutput(host + ".log")
+		if err != nil {
+			log.Fatal(err)
+		}
 		defer endLogging()
 	} else if Output != "" {
-		endLogging := logOutput(Output)
+		endLogging, err := logOutput(Output)
+		if err != nil {
+			log.Fatal(err)
+		}
 		defer endLogging()
 	}
 
@@ -239,7 +245,6 @@ func pingCmd(arguments []string) {
 		blue.Sprintf("%v", Size+28))
 
 	err = myPing.Run()
-
 	if err != nil {
 		log.Fatal(err)
 	}
