@@ -35,14 +35,14 @@ Colors can be stripped from log files via the `strip` subcommand, e.g. `pinglog 
 ## Usage output
 ```
 Usage:
-  pinglog [flags] <host>
+  pinglog [flags] host
   pinglog [command]
 
 Available Commands:
   completion  Generate the autocompletion script for the specified shell
   help        Help about any command
   loss        Calculate periods of packet loss from log file(s)
-  strip       Strip ANSI color codes from log file(s)
+  strip       Strip ANSI color codes from log file
   version     Print version
 
 Flags:
