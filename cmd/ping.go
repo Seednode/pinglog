@@ -110,12 +110,7 @@ func configurePinger(myPing *ping.Pinger) {
 	}
 	myPing.Resolve()
 
-	switch Color {
-	case true:
-		color.NoColor = false
-	default:
-		color.NoColor = true
-	}
+	color.NoColor = !Color
 }
 
 func showReceived(pkt *ping.Packet, myPing *ping.Pinger, packets *Packets, colors *Colors) {
