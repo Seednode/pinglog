@@ -5,6 +5,7 @@ Copyright © 2022 Seednode <seednode@seedno.de>
 package cmd
 
 import (
+	"log"
 	"math"
 	"os"
 	"time"
@@ -35,7 +36,10 @@ var rootCmd = &cobra.Command{
 	Short: "A more featureful ping tool.",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		pingCmd(args)
+		err := pingCmd(args)
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }
 

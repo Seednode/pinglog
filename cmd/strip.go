@@ -14,10 +14,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func StripColors(args []string) {
+func StripColors(args []string) error {
 	file, err := os.Open(args[0])
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer func(file *os.File) {
 		err := file.Close()
@@ -29,12 +29,17 @@ func StripColors(args []string) {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		strippedLine := stripansi.Strip(scanner.Text())
-		fmt.Println(strippedLine)
+		_, err := fmt.Println(strippedLine)
+		if err != nil {
+			return err
+		}
 	}
 
 	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }
 
 var stripCmd = &cobra.Command{
@@ -42,7 +47,10 @@ var stripCmd = &cobra.Command{
 	Short: "Strip ANSI color codes from log file",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		StripColors(args)
+		err := StripColors(args)
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }
 

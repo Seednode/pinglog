@@ -6,11 +6,12 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/spf13/cobra"
 )
 
-var Version = "0.12.2"
+var Version = "0.12.3"
 
 func init() {
 	rootCmd.AddCommand(versionCmd)
@@ -21,6 +22,9 @@ var versionCmd = &cobra.Command{
 	Short: "Print version",
 	Long:  "Print the version number of pinglog",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Pinglog v" + Version)
+		_, err := fmt.Println("Pinglog v" + Version)
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }

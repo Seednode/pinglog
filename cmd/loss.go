@@ -7,6 +7,7 @@ package cmd
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 	"time"
@@ -35,11 +36,14 @@ func CalculateLoss(logFile string) error {
 	defer func(file *os.File) {
 		err := file.Close()
 		if err != nil {
-			fmt.Println(err)
+			log.Fatal(err)
 		}
 	}(file)
 
-	fmt.Printf("%v:\n", logFile)
+	_, err = fmt.Printf("%v:\n", logFile)
+	if err != nil {
+		return err
+	}
 
 	var lastHadLoss bool = false
 	var lastTimestamp = time.Time{}
@@ -110,10 +114,15 @@ func CalculateLoss(logFile string) error {
 	return nil
 }
 
-func Loss(arguments []string) {
+func Loss(arguments []string) error {
 	for file := 0; file < len(arguments); file++ {
-		CalculateLoss(arguments[file])
+		err := CalculateLoss(arguments[file])
+		if err != nil {
+			return err
+		}
 	}
+
+	return nil
 }
 
 var lossCmd = &cobra.Command{
@@ -121,7 +130,10 @@ var lossCmd = &cobra.Command{
 	Short: "Calculate periods of packet loss from log file(s)",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		Loss(args)
+		err := Loss(args)
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }
 

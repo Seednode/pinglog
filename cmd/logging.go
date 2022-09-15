@@ -17,7 +17,10 @@ import (
 
 func removeExisting(logFile string, shouldPrompt bool) error {
 	if shouldPrompt {
-		fmt.Print("File " + logFile + " already exists. Remove? (y/N) ")
+		_, err := fmt.Print("File " + logFile + " already exists. Remove? (y/N) ")
+		if err != nil {
+			return err
+		}
 
 		input := bufio.NewScanner(os.Stdin)
 		input.Scan()
