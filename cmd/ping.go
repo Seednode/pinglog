@@ -164,7 +164,7 @@ func showReceived(pkt *ping.Packet, myPing *ping.Pinger, packets *Packets, color
 	}
 }
 
-func showDuplicates(pkt *ping.Packet, colors *Colors) {
+func showDuplicate(pkt *ping.Packet, colors *Colors) {
 	if Timestamp {
 		timeStamp := time.Now().Format(DATE)
 
@@ -236,16 +236,6 @@ func pingCmd(arguments []string) {
 
 	configurePinger(myPing)
 
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-	go func() {
-		for {
-			<-c
-			wasInterrupted = true
-			myPing.Stop()
-		}
-	}()
-
 	colors := initializeColors()
 	packets := initializeCounters()
 
@@ -254,7 +244,7 @@ func pingCmd(arguments []string) {
 	}
 
 	myPing.OnDuplicateRecv = func(pkt *ping.Packet) {
-		showDuplicates(pkt, colors)
+		showDuplicate(pkt, colors)
 	}
 
 	myPing.OnFinish = func(stats *ping.Statistics) {
@@ -276,6 +266,16 @@ func pingCmd(arguments []string) {
 	}
 
 	showStart(myPing, colors)
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	go func() {
+		for {
+			<-c
+			wasInterrupted = true
+			myPing.Stop()
+		}
+	}()
 
 	startTime = time.Now()
 
