@@ -38,7 +38,7 @@ func StripColors(args []string) {
 }
 
 var stripCmd = &cobra.Command{
-	Use:   "strip file",
+	Use:   "strip <file>",
 	Short: "Strip ANSI color codes from log file",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
