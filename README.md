@@ -35,7 +35,7 @@ Colors can be stripped from log files via the `strip` subcommand, e.g. `pinglog 
 ## Usage output
 ```
 Usage:
-  pinglog [flags] host
+  pinglog [flags] <host>
   pinglog [command]
 
 Available Commands:
