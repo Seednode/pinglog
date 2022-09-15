@@ -40,7 +40,6 @@ Usage:
 
 Available Commands:
   completion  Generate the autocompletion script for the specified shell
-  graph       Generate graph from log file
   help        Help about any command
   loss        Calculate periods of packet loss from log file(s)
   strip       Strip ANSI color codes from log file(s)
