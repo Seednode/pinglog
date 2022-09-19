@@ -105,9 +105,10 @@ func CalculateLoss(logFile string) error {
 		return err
 	}
 
-	if lostPackets == 0 {
+	switch lostPackets {
+	case 0:
 		fmt.Println("No dropped packets found")
-	} else {
+	default:
 		fmt.Println()
 	}
 
