@@ -48,7 +48,7 @@ Available Commands:
 Flags:
   -b, --beep                               enable audible bell for exceeded max-rtt
   -C, --color                              enable colorized output
-  -c, --count int                          number of packets to send (default -1)
+  -c, --count uint                         number of packets to send
   -d, --dropped                            log dropped packets
   -f, --force                              overwrite log file without prompting
   -h, --help                               help for pinglog
@@ -60,10 +60,10 @@ Flags:
   -p, --privileged                         run in privileged mode (always enabled on Windows)
   -q, --quiet                              only display summary at end
   -r, --rtt                                record RTTs (can increase memory use for long sessions)
-  -s, --size int                           size of packets, in bytes (default 56)
+  -s, --size uint16                        size of packets, in bytes (default 56)
   -w, --timeout duration                   connection timeout (default 2562047h47m16.854775807s)
   -t, --timestamp                          prepend timestamps to output
-  -T, --ttl int                            max time to live (default 128)
+  -T, --ttl uint16                         max time to live (default 128)
 
 Use "pinglog [command] --help" for more information about a command.
 ```
