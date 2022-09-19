@@ -15,7 +15,7 @@ import (
 
 var Beep bool
 var Color bool
-var Count int
+var Count uint64
 var Dropped bool
 var ForceOverwrite bool
 var Interval time.Duration
@@ -26,10 +26,10 @@ var Output string
 var Privileged bool
 var Quiet bool
 var RTT bool
-var Size int
+var Size uint16
 var Timeout time.Duration
 var Timestamp bool
-var TTL int
+var TTL uint16
 
 var rootCmd = &cobra.Command{
 	Use:   "pinglog [flags] <host>",
@@ -53,7 +53,7 @@ func Execute() {
 func init() {
 	rootCmd.Flags().BoolVarP(&Beep, "beep", "b", false, "enable audible bell for exceeded max-rtt")
 	rootCmd.Flags().BoolVarP(&Color, "color", "C", false, "enable colorized output")
-	rootCmd.Flags().IntVarP(&Count, "count", "c", -1, "number of packets to send")
+	rootCmd.Flags().Uint64VarP(&Count, "count", "c", 0, "number of packets to send")
 	rootCmd.Flags().BoolVarP(&Dropped, "dropped", "d", false, "log dropped packets")
 	rootCmd.Flags().BoolVarP(&ForceOverwrite, "force", "f", false, "overwrite log file without prompting")
 	rootCmd.Flags().DurationVarP(&Interval, "interval", "i", time.Second, "time between packets")
@@ -66,8 +66,8 @@ func init() {
 	rootCmd.Flags().BoolVarP(&Privileged, "privileged", "p", false, "run in privileged mode (always enabled on Windows)")
 	rootCmd.Flags().BoolVarP(&Quiet, "quiet", "q", false, "only display summary at end")
 	rootCmd.Flags().BoolVarP(&RTT, "rtt", "r", false, "record RTTs (can increase memory use for long sessions)")
-	rootCmd.Flags().IntVarP(&Size, "size", "s", 56, "size of packets, in bytes")
+	rootCmd.Flags().Uint16VarP(&Size, "size", "s", 56, "size of packets, in bytes")
 	rootCmd.Flags().DurationVarP(&Timeout, "timeout", "w", time.Duration(math.MaxInt64), "connection timeout")
 	rootCmd.Flags().BoolVarP(&Timestamp, "timestamp", "t", false, "prepend timestamps to output")
-	rootCmd.Flags().IntVarP(&TTL, "ttl", "T", 128, "max time to live")
+	rootCmd.Flags().Uint16VarP(&TTL, "ttl", "T", 128, "max time to live")
 }

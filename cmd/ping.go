@@ -85,11 +85,11 @@ func highlightLongRTT(packetRTT time.Duration, colors *Colors, isEnding bool) st
 }
 
 func configurePinger(myPing *ping.Pinger) error {
-	myPing.Count = Count
-	myPing.Size = Size
+	myPing.Count = int(Count)
+	myPing.Size = int(Size)
 	myPing.Interval = Interval
 	myPing.Timeout = Timeout
-	myPing.TTL = TTL
+	myPing.TTL = int(TTL)
 	myPing.RecordRtts = RTT
 
 	// privileged is required on Windows
@@ -171,7 +171,7 @@ func showReceived(pkt *ping.Packet, myPing *ping.Pinger, packets *Packets, color
 		}
 	}
 
-	if packets.Current == (Count - 1) {
+	if packets.Current == (int(Count) - 1) {
 		myPing.Stop()
 	}
 
@@ -214,8 +214,8 @@ func showDuplicate(pkt *ping.Packet, colors *Colors) error {
 func showStatistics(stats *ping.Statistics, myPing *ping.Pinger, packets *Packets, colors *Colors, startTime time.Time, wasInterrupted bool) error {
 	runTime := time.Since(startTime)
 
-	if !wasInterrupted && Dropped && (Count != -1) && (packets.Current != (Count - 1)) {
-		for c := packets.Current + 1; c < Count; c++ {
+	if !wasInterrupted && Dropped && (Count != 0) && (packets.Current != (int(Count) - 1)) {
+		for c := packets.Current + 1; c < int(Count); c++ {
 			_, err := fmt.Printf("%v", colors.Red.Sprintf("Packet %v lost or arrived out of order.\n", c))
 			if err != nil {
 				return err
