@@ -67,18 +67,17 @@ func humanReadableSize(bytes int) string {
 func highlightPacketLoss(packetLoss float64, colors *Colors) string {
 	if packetLoss != 0.0 {
 		return colors.Red.Sprintf("%.3f%%", packetLoss)
+	} else {
+		return colors.Blue.Sprintf("%.3f%%", packetLoss)
 	}
-
-	return colors.Blue.Sprintf("%.3f%%", packetLoss)
 }
 
 func highlightLongRTT(packetRTT time.Duration, colors *Colors, isEnding bool) string {
 	switch {
+	case packetRTT > MaxRTT && Beep && !isEnding:
+		fmt.Print("\a")
+		return colors.Red.Sprintf("%v", packetRTT)
 	case packetRTT > MaxRTT:
-		if Beep && !isEnding {
-			fmt.Print("\a")
-		}
-
 		return colors.Red.Sprintf("%v", packetRTT)
 	default:
 		return colors.Blue.Sprintf("%v", packetRTT)
@@ -149,8 +148,7 @@ func showReceived(pkt *ping.Packet, myPing *ping.Pinger, packets *Packets, color
 		return nil
 	}
 
-	switch Timestamp {
-	case true:
+	if Timestamp {
 		timeStamp := time.Now().Format(DATE)
 		_, err := fmt.Printf("%v | %v from %v: icmp_seq=%v ttl=%v time=%v\n",
 			colors.Grey.Sprintf(timeStamp),
@@ -162,7 +160,7 @@ func showReceived(pkt *ping.Packet, myPing *ping.Pinger, packets *Packets, color
 		if err != nil {
 			return err
 		}
-	default:
+	} else {
 		_, err := fmt.Printf("%v from %v: icmp_seq=%v ttl=%v time=%v\n",
 			colors.Blue.Sprintf("%v bytes", pkt.Nbytes-8),
 			colors.Blue.Sprintf("%v", pkt.IPAddr),
@@ -182,8 +180,7 @@ func showReceived(pkt *ping.Packet, myPing *ping.Pinger, packets *Packets, color
 }
 
 func showDuplicate(pkt *ping.Packet, colors *Colors) error {
-	switch Timestamp {
-	case true:
+	if Timestamp {
 		timeStamp := time.Now().Format(DATE)
 
 		_, err := fmt.Printf("%v | %v from %v: icmp_seq=%v ttl=%v time=%v %v\n",
@@ -197,7 +194,7 @@ func showDuplicate(pkt *ping.Packet, colors *Colors) error {
 		if err != nil {
 			return err
 		}
-	default:
+	} else {
 		_, err := fmt.Printf("%v from %v: icmp_seq=%v ttl=%v time=%v %v\n",
 			colors.Blue.Sprintf("%v bytes", pkt.Nbytes-8),
 			colors.Blue.Sprintf("%v", pkt.IPAddr),
@@ -306,13 +303,14 @@ func pingCmd(arguments []string) error {
 		}
 	}
 
-	if Output == "<hostname>.log" {
+	switch {
+	case Output == "<hostname>.log":
 		endLogging, err := logOutput(host + ".log")
 		if err != nil {
 			return err
 		}
 		defer endLogging()
-	} else if Output != "" {
+	case Output != "":
 		endLogging, err := logOutput(Output)
 		if err != nil {
 			return err

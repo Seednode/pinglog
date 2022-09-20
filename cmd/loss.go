@@ -45,9 +45,9 @@ func CalculateLoss(logFile string) error {
 		return err
 	}
 
-	var lastHadLoss bool = false
+	var lostLastPacket bool = false
 	var lastTimestamp = time.Time{}
-	var lostPackets int = 0
+	var lostPacketCount int = 0
 	var startTime = time.Time{}
 	var endTime = time.Time{}
 
@@ -64,38 +64,42 @@ func CalculateLoss(logFile string) error {
 			return err
 		}
 
-		if strings.Contains(stripped, "lost or arrived out of order") {
-			if !lastHadLoss {
-				startTime = lastTimestamp
-				endTime = startTime
-				if err != nil {
-					return err
-				}
+		lostThisPacket := strings.Contains(stripped, "lost or arrived out of order")
 
-				lostPackets = 1
-			} else {
-				endTime, err = parseTime(stripped)
-				if err != nil {
-					return err
-				}
-
-				lostPackets++
+		switch {
+		case lostThisPacket && !lostLastPacket:
+			startTime = lastTimestamp
+			endTime = startTime
+			if err != nil {
+				return err
 			}
 
-			lastHadLoss = true
-		} else if lastHadLoss {
+			lostPacketCount = 1
+			lostLastPacket = true
+		case lostThisPacket && lostLastPacket:
 			endTime, err = parseTime(stripped)
 			if err != nil {
 				return err
 			}
 
-			if lostPackets == 1 {
-				fmt.Printf("%v\n", endTime)
-			} else {
-				fmt.Printf("%v => %v [%v packets lost]\n", startTime, endTime, lostPackets)
+			lostPacketCount++
+			lostLastPacket = true
+		case !lostThisPacket && lostLastPacket && lostPacketCount == 1:
+			endTime, err = parseTime(stripped)
+			if err != nil {
+				return err
 			}
 
-			lastHadLoss = false
+			fmt.Printf("%v\n", endTime)
+			lostLastPacket = false
+		case !lostThisPacket && lostLastPacket:
+			endTime, err = parseTime(stripped)
+			if err != nil {
+				return err
+			}
+
+			fmt.Printf("%v => %v [%v packets lost]\n", startTime, endTime, lostPacketCount)
+			lostLastPacket = false
 		}
 
 		lastTimestamp = timestamp
@@ -105,7 +109,7 @@ func CalculateLoss(logFile string) error {
 		return err
 	}
 
-	switch lostPackets {
+	switch lostPacketCount {
 	case 0:
 		fmt.Println("No dropped packets found")
 	default:

@@ -40,12 +40,14 @@ func removeExisting(logFile string, shouldPrompt bool) error {
 
 func checkExisting(logFile string) error {
 	_, err := os.Stat(logFile)
-	if !errors.Is(err, os.ErrNotExist) && !ForceOverwrite {
+
+	switch {
+	case !errors.Is(err, os.ErrNotExist) && !ForceOverwrite:
 		err := removeExisting(logFile, true)
 		if err != nil {
 			return err
 		}
-	} else if errors.Is(err, os.ErrNotExist) && ForceOverwrite {
+	case errors.Is(err, os.ErrNotExist) && ForceOverwrite:
 		err := removeExisting(logFile, false)
 		if err != nil {
 			return err
