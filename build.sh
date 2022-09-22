@@ -14,8 +14,8 @@ platforms=(
   "windows/amd64"
 )
 
-for platform in ${platforms[@]}; do
-  platform_split=(${platform//\// })
+for platform in "${platforms[@]}"; do
+  IFS=" " read -r -a platform_split <<< "${platform//\// }"
   GOOS="${platform_split[0]}"
   GOARCH="${platform_split[1]}"
   output_name="${package_name}-${GOOS}-${GOARCH}"
