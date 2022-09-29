@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"log"
 	"os"
 	"path/filepath"
@@ -31,7 +32,8 @@ func removeExisting(logFile string, shouldPrompt bool) error {
 	}
 
 	err := os.Remove(logFile)
-	if err != nil {
+
+	if err != nil && !errors.Is(err, fs.ErrNotExist) {
 		return err
 	}
 
