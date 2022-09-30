@@ -17,6 +17,6 @@ require (
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	golang.org/x/net v0.0.0-20220927171203-f486391704dc // indirect
-	golang.org/x/sync v0.0.0-20220923202941-7f9b1623fab7 // indirect
+	golang.org/x/sync v0.0.0-20220929204114-8fcdb60fdcc0 // indirect
 	golang.org/x/sys v0.0.0-20220928140112-f11e5e49a4ec // indirect
 )
