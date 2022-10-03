@@ -130,6 +130,8 @@ func showReceived(pkt *ping.Packet, myPing *ping.Pinger, packets *Packets, color
 			if err != nil {
 				return err
 			}
+
+			packetsLost.Inc()
 		}
 		packets.Expected = packets.Current + 1
 	case Dropped && (packets.Expected != packets.Current):
@@ -138,6 +140,8 @@ func showReceived(pkt *ping.Packet, myPing *ping.Pinger, packets *Packets, color
 			if err != nil {
 				return err
 			}
+
+			packetsLost.Inc()
 		}
 		packets.Expected = packets.Current + 1
 	case Dropped:
@@ -175,6 +179,8 @@ func showReceived(pkt *ping.Packet, myPing *ping.Pinger, packets *Packets, color
 	if packets.Current == (int(Count) - 1) {
 		myPing.Stop()
 	}
+
+	packetsReceived.Inc()
 
 	return nil
 }
@@ -282,6 +288,10 @@ func pingCmd(arguments []string) error {
 	colors := initializeColors()
 	packets := initializeCounters()
 
+	myPing.OnSend = func(pkt *ping.Packet) {
+		packetsSent.Inc()
+	}
+
 	myPing.OnRecv = func(pkt *ping.Packet) {
 		err := showReceived(pkt, myPing, packets, colors)
 		if err != nil {
@@ -331,6 +341,10 @@ func pingCmd(arguments []string) error {
 	}()
 
 	startTime = time.Now()
+
+	if Metrics {
+		go serveMetrics()
+	}
 
 	err = myPing.Run()
 	if err != nil {

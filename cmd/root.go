@@ -22,6 +22,7 @@ var Interval time.Duration
 var IPv4 bool
 var IPv6 bool
 var MaxRTT time.Duration
+var Metrics bool
 var Output string
 var Privileged bool
 var Quiet bool
@@ -60,6 +61,7 @@ func init() {
 	rootCmd.Flags().BoolVarP(&IPv4, "ipv4", "4", false, "force dns resolution to ipv4")
 	rootCmd.Flags().BoolVarP(&IPv6, "ipv6", "6", false, "force dns resolution to ipv6")
 	rootCmd.MarkFlagsMutuallyExclusive("ipv4", "ipv6")
+	rootCmd.Flags().BoolVarP(&Metrics, "metrics", "M", false, "offer prometheus metrics endpoint")
 	rootCmd.Flags().DurationVarP(&MaxRTT, "max-rtt", "m", time.Hour, "colorize packets over this rtt")
 	rootCmd.Flags().StringVarP(&Output, "output", "o", "", "write to the specified file as well as stdout")
 	rootCmd.Flags().Lookup("output").NoOptDefVal = "<hostname>.log"
