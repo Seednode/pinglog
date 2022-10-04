@@ -211,12 +211,12 @@ func showDuplicate(pkt *ping.Packet, colors *Colors) error {
 	return nil
 }
 
-func showStatistics(stats *ping.Statistics, myPing *ping.Pinger, packets *Packets, colors *Colors, startTime time.Time, wasInterrupted bool) string {
+func showStatistics(stats *ping.Statistics, myPing *ping.Pinger, packets *Packets, colors *Colors, startTime time.Time, wasInterrupted bool, isEnding bool) string {
 	var s string
 
 	runTime := time.Since(startTime)
 
-	if !wasInterrupted && Dropped && (Count != 0) && (packets.Current != (int(Count) - 1)) {
+	if isEnding && !wasInterrupted && Dropped && (Count != 0) && (packets.Current != (int(Count) - 1)) {
 		for c := packets.Current + 1; c < int(Count); c++ {
 			s += fmt.Sprintf("%v", colors.Red.Sprintf("Packet %v lost or arrived out of order.\n", c))
 		}
@@ -288,7 +288,7 @@ func pingCmd(arguments []string) error {
 	}
 
 	myPing.OnFinish = func(stats *ping.Statistics) {
-		fmt.Printf("\n%v", showStatistics(stats, myPing, packets, colors, startTime, wasInterrupted))
+		fmt.Printf("\n%v", showStatistics(stats, myPing, packets, colors, startTime, wasInterrupted, true))
 	}
 
 	switch {
@@ -308,21 +308,6 @@ func pingCmd(arguments []string) error {
 
 	showStart(myPing, colors)
 
-	if Port != 0 {
-		var err error
-		go func() error {
-			err = serveMetrics(myPing)
-			if err != nil {
-				return err
-			}
-
-			return nil
-		}()
-		if err != nil {
-			return err
-		}
-	}
-
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	go func() {
@@ -333,7 +318,7 @@ func pingCmd(arguments []string) error {
 		}
 	}()
 
-	go func() error {
+	go func() {
 		consoleReader := bufio.NewReaderSize(os.Stdin, 1)
 		for {
 			input, _, err := consoleReader.ReadRune()
@@ -342,7 +327,7 @@ func pingCmd(arguments []string) error {
 			}
 
 			if string(input) == "\n" {
-				fmt.Fprint(os.Stderr, showStatistics(myPing.Statistics(), myPing, packets, colors, startTime, false))
+				fmt.Fprint(os.Stderr, showStatistics(myPing.Statistics(), myPing, packets, colors, startTime, false, false))
 			}
 		}
 	}()

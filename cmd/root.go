@@ -24,7 +24,6 @@ var IPv6 bool
 var MaxRTT time.Duration
 var Output string
 var Privileged bool
-var Port uint16
 var Quiet bool
 var RTT bool
 var Size uint16
@@ -64,10 +63,9 @@ func init() {
 	rootCmd.Flags().DurationVarP(&MaxRTT, "max-rtt", "m", time.Hour, "colorize packets over this rtt")
 	rootCmd.Flags().StringVarP(&Output, "output", "o", "", "write to the specified file as well as stdout")
 	rootCmd.Flags().Lookup("output").NoOptDefVal = "<hostname>.log"
-	rootCmd.Flags().Uint16VarP(&Port, "port", "p", 0, "offer prometheus metrics endpoint on the specified port")
 	rootCmd.Flags().BoolVar(&Privileged, "privileged", false, "run in privileged mode (always enabled on Windows)")
 	rootCmd.Flags().BoolVarP(&Quiet, "quiet", "q", false, "only display summary at end")
-	rootCmd.Flags().BoolVarP(&RTT, "rtt", "r", false, "record RTTs (can increase memory use for long sessions)")
+	rootCmd.Flags().BoolVar(&RTT, "record-rtts", false, "record RTTs (can increase memory use for long sessions)")
 	rootCmd.Flags().Uint16VarP(&Size, "size", "s", 56, "size of packets, in bytes")
 	rootCmd.Flags().DurationVarP(&Timeout, "timeout", "w", time.Duration(math.MaxInt64), "connection timeout")
 	rootCmd.Flags().BoolVarP(&Timestamp, "timestamp", "t", false, "prepend timestamps to output")

@@ -70,7 +70,6 @@ func teeOutput(logFilePtr *os.File) (func(), error) {
 	}
 
 	os.Stdout = writer
-	//os.Stderr = writer
 
 	exit := make(chan bool)
 
