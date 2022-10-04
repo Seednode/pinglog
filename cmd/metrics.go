@@ -17,10 +17,10 @@ type MetricsCollector struct {
 	Pinger      *ping.Pinger
 	PacketsSent *prometheus.Desc
 	PacketsRecv *prometheus.Desc
-	RTTMin      *prometheus.Desc
-	RTTMax      *prometheus.Desc
-	RTTAvg      *prometheus.Desc
-	RTTStdDev   *prometheus.Desc
+	RttMin      *prometheus.Desc
+	RttMax      *prometheus.Desc
+	RttAvg      *prometheus.Desc
+	RttStdDev   *prometheus.Desc
 }
 
 var MinRTTs prometheus.Histogram
@@ -38,19 +38,19 @@ func newMetricsCollector() *MetricsCollector {
 			"Number of packets received",
 			nil, nil,
 		),
-		RTTMin: prometheus.NewDesc("rtt_min",
+		RttMin: prometheus.NewDesc("rtt_min",
 			"Minimum RTT (in microseconds)",
 			nil, nil,
 		),
-		RTTMax: prometheus.NewDesc("rtt_max",
+		RttMax: prometheus.NewDesc("rtt_max",
 			"Maximum RTT (in microseconds)",
 			nil, nil,
 		),
-		RTTAvg: prometheus.NewDesc("rtt_avg",
+		RttAvg: prometheus.NewDesc("rtt_avg",
 			"Average RTT (in microseconds)",
 			nil, nil,
 		),
-		RTTStdDev: prometheus.NewDesc("rtt_stddev",
+		RttStdDev: prometheus.NewDesc("rtt_stddev",
 			"Standard deviation of RTT (in microseconds)",
 			nil, nil,
 		),
@@ -60,10 +60,10 @@ func newMetricsCollector() *MetricsCollector {
 func (collector *MetricsCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- collector.PacketsSent
 	ch <- collector.PacketsRecv
-	ch <- collector.RTTMin
-	ch <- collector.RTTAvg
-	ch <- collector.RTTMax
-	ch <- collector.RTTStdDev
+	ch <- collector.RttMin
+	ch <- collector.RttAvg
+	ch <- collector.RttMax
+	ch <- collector.RttStdDev
 }
 
 func (collector *MetricsCollector) Collect(ch chan<- prometheus.Metric) {
@@ -103,7 +103,6 @@ func initMetrics(registry *prometheus.Registry) {
 }
 
 func serveMetrics(myPing *ping.Pinger) error {
-
 	registry := prometheus.NewRegistry()
 	initMetrics(registry)
 

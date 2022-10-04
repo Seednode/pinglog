@@ -5,6 +5,7 @@ Copyright © 2022 Seednode <seednode@seedno.de>
 package cmd
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"os"
@@ -210,44 +211,34 @@ func showDuplicate(pkt *ping.Packet, colors *Colors) error {
 	return nil
 }
 
-func showStatistics(stats *ping.Statistics, myPing *ping.Pinger, packets *Packets, colors *Colors, startTime time.Time, wasInterrupted bool) error {
+func showStatistics(stats *ping.Statistics, myPing *ping.Pinger, packets *Packets, colors *Colors, startTime time.Time, wasInterrupted bool) string {
+	var s string
+
 	runTime := time.Since(startTime)
 
 	if !wasInterrupted && Dropped && (Count != 0) && (packets.Current != (int(Count) - 1)) {
 		for c := packets.Current + 1; c < int(Count); c++ {
-			_, err := fmt.Printf("%v", colors.Red.Sprintf("Packet %v lost or arrived out of order.\n", c))
-			if err != nil {
-				return err
-			}
+			s += fmt.Sprintf("%v", colors.Red.Sprintf("Packet %v lost or arrived out of order.\n", c))
 		}
 	}
 
-	_, err := fmt.Printf("\n--- %v ping statistics ---\n", colors.Green.Sprintf(stats.Addr))
-	if err != nil {
-		return err
-	}
+	s += fmt.Sprintf("--- %v ping statistics ---\n", colors.Green.Sprintf(stats.Addr))
 
-	_, err = fmt.Printf("%v packets transmitted (%v), %v received (%v), %v packet loss, time %v\n",
+	s += fmt.Sprintf("%v packets transmitted (%v), %v received (%v), %v packet loss, time %v\n",
 		colors.Blue.Sprintf("%v", stats.PacketsSent),
 		colors.Blue.Sprintf(humanReadableSize(stats.PacketsSent*myPing.Size)),
 		colors.Blue.Sprintf("%v", stats.PacketsRecv),
 		colors.Blue.Sprintf(humanReadableSize(stats.PacketsRecv*myPing.Size)),
 		highlightPacketLoss(stats.PacketLoss, colors),
 		colors.Blue.Sprintf("%v", runTime.Truncate(time.Millisecond)))
-	if err != nil {
-		return err
-	}
 
-	_, err = fmt.Printf("rtt min/avg/max/mdev = %v/%v/%v/%v\n\n",
+	s += fmt.Sprintf("rtt min/avg/max/mdev = %v/%v/%v/%v\n\n",
 		highlightLongRTT(stats.MinRtt.Truncate(time.Microsecond), colors, true),
 		highlightLongRTT(stats.AvgRtt.Truncate(time.Microsecond), colors, true),
 		highlightLongRTT(stats.MaxRtt.Truncate(time.Microsecond), colors, true),
 		colors.Blue.Sprintf("%v", stats.StdDevRtt.Truncate(time.Microsecond)))
-	if err != nil {
-		return err
-	}
 
-	return nil
+	return s
 }
 
 func showStart(myPing *ping.Pinger, colors *Colors) error {
@@ -297,10 +288,7 @@ func pingCmd(arguments []string) error {
 	}
 
 	myPing.OnFinish = func(stats *ping.Statistics) {
-		err := showStatistics(stats, myPing, packets, colors, startTime, wasInterrupted)
-		if err != nil {
-			log.Fatal(err)
-		}
+		fmt.Printf("\n%v", showStatistics(stats, myPing, packets, colors, startTime, wasInterrupted))
 	}
 
 	switch {
@@ -342,6 +330,20 @@ func pingCmd(arguments []string) error {
 			<-c
 			wasInterrupted = true
 			myPing.Stop()
+		}
+	}()
+
+	go func() error {
+		consoleReader := bufio.NewReaderSize(os.Stdin, 1)
+		for {
+			input, _, err := consoleReader.ReadRune()
+			if err != nil {
+				fmt.Fprintln(os.Stderr, err)
+			}
+
+			if string(input) == "\n" {
+				fmt.Fprint(os.Stderr, showStatistics(myPing.Statistics(), myPing, packets, colors, startTime, false))
+			}
 		}
 	}()
 

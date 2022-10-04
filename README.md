@@ -18,6 +18,7 @@ Added features compared to `ping(8)` include:
 - Specifying intervals with units (h,m,s,ms,...ns)
 - Logging to a file
 - Colorized output
+- View current statistics with <Return>
 
 ## Color
 For colorized output to work on Windows 10 with Powershell prior to v7.2.2, you need to enable VT support.
