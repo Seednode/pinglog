@@ -19,9 +19,8 @@ import (
 func parseTime(line string) (string, error) {
 	fields := strings.Fields(line)
 
-	t, err := time.Parse(DATE, fields[0]+" "+fields[1]+" "+fields[2])
+	t, err := time.Parse(DATE, strings.Join(fields[:3], " "))
 	if err != nil {
-		fmt.Printf("Failed to parse time from '%v'\n", line)
 		return "", err
 	}
 
@@ -96,10 +95,9 @@ func CalculateLoss(logFile string) error {
 		return err
 	}
 
-	switch lostPacketCount {
-	case 0:
+	if lostPacketCount == 0 {
 		fmt.Println("No dropped packets found")
-	default:
+	} else {
 		fmt.Println()
 	}
 
