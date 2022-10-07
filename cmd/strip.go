@@ -9,10 +9,18 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 
-	"github.com/acarl005/stripansi"
 	"github.com/spf13/cobra"
 )
+
+const ansi = "\x1b[[0-9;]*m|\x07"
+
+var re = regexp.MustCompile(ansi)
+
+func Strip(str string) string {
+	return re.ReplaceAllString(str, "")
+}
 
 func StripColors(args []string) error {
 	file, err := os.Open(args[0])
@@ -28,7 +36,7 @@ func StripColors(args []string) error {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		strippedLine := stripansi.Strip(scanner.Text())
+		strippedLine := Strip(scanner.Text())
 		_, err := fmt.Println(strippedLine)
 		if err != nil {
 			return err

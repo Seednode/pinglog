@@ -12,7 +12,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/acarl005/stripansi"
 	"github.com/spf13/cobra"
 )
 
@@ -27,10 +26,12 @@ func parseTime(line string) (string, error) {
 	return t.Format(DATE), nil
 }
 
-func CalculateLoss(logFile string) error {
+func CalculateLoss(logFile string) (int, error) {
+	var LostPackets int
+
 	file, err := os.Open(logFile)
 	if err != nil {
-		return err
+		return 0, err
 	}
 	defer func(file *os.File) {
 		err := file.Close()
@@ -41,7 +42,7 @@ func CalculateLoss(logFile string) error {
 
 	_, err = fmt.Printf("%v:\n", logFile)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	var lostLastPacket bool
@@ -52,7 +53,7 @@ func CalculateLoss(logFile string) error {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		stripped := stripansi.Strip(scanner.Text())
+		stripped := Strip(scanner.Text())
 
 		if !strings.Contains(stripped, "|") {
 			continue
@@ -60,7 +61,7 @@ func CalculateLoss(logFile string) error {
 
 		timestamp, err := parseTime(stripped)
 		if err != nil {
-			return err
+			return 0, err
 		}
 
 		lostThisPacket := strings.Contains(stripped, "lost or arrived out of order")
@@ -70,9 +71,10 @@ func CalculateLoss(logFile string) error {
 			startTime = lastTimestamp
 			endTime = startTime
 			if err != nil {
-				return err
+				return 0, err
 			}
 
+			LostPackets += lostPacketCount
 			lostPacketCount = 1
 			lostLastPacket = true
 		case lostThisPacket && lostLastPacket:
@@ -81,7 +83,7 @@ func CalculateLoss(logFile string) error {
 		case !lostThisPacket && lostLastPacket:
 			endTime = timestamp
 			if err != nil {
-				return err
+				return 0, err
 			}
 
 			fmt.Printf("%v => %v [%v packet(s) lost]\n", startTime, endTime, lostPacketCount)
@@ -92,7 +94,7 @@ func CalculateLoss(logFile string) error {
 	}
 
 	if err := scanner.Err(); err != nil {
-		return err
+		return 0, err
 	}
 
 	if lostPacketCount == 0 {
@@ -101,12 +103,12 @@ func CalculateLoss(logFile string) error {
 		fmt.Println()
 	}
 
-	return nil
+	return LostPackets, nil
 }
 
 func Loss(arguments []string) error {
 	for file := 0; file < len(arguments); file++ {
-		err := CalculateLoss(arguments[file])
+		_, err := CalculateLoss(arguments[file])
 		if err != nil {
 			return err
 		}
