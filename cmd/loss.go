@@ -26,12 +26,10 @@ func parseTime(line string) (string, error) {
 	return t.Format(DATE), nil
 }
 
-func CalculateLoss(logFile string) (int, error) {
-	var LostPackets int
-
+func CalculateLoss(logFile string) error {
 	file, err := os.Open(logFile)
 	if err != nil {
-		return 0, err
+		return err
 	}
 	defer func(file *os.File) {
 		err := file.Close()
@@ -42,7 +40,7 @@ func CalculateLoss(logFile string) (int, error) {
 
 	_, err = fmt.Printf("%v:\n", logFile)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
 	var lostLastPacket bool
@@ -61,7 +59,7 @@ func CalculateLoss(logFile string) (int, error) {
 
 		timestamp, err := parseTime(stripped)
 		if err != nil {
-			return 0, err
+			return err
 		}
 
 		lostThisPacket := strings.Contains(stripped, "lost or arrived out of order")
@@ -71,10 +69,9 @@ func CalculateLoss(logFile string) (int, error) {
 			startTime = lastTimestamp
 			endTime = startTime
 			if err != nil {
-				return 0, err
+				return err
 			}
 
-			LostPackets += lostPacketCount
 			lostPacketCount = 1
 			lostLastPacket = true
 		case lostThisPacket && lostLastPacket:
@@ -83,7 +80,7 @@ func CalculateLoss(logFile string) (int, error) {
 		case !lostThisPacket && lostLastPacket:
 			endTime = timestamp
 			if err != nil {
-				return 0, err
+				return err
 			}
 
 			fmt.Printf("%v => %v [%v packet(s) lost]\n", startTime, endTime, lostPacketCount)
@@ -94,7 +91,7 @@ func CalculateLoss(logFile string) (int, error) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		return 0, err
+		return err
 	}
 
 	if lostPacketCount == 0 {
@@ -103,12 +100,12 @@ func CalculateLoss(logFile string) (int, error) {
 		fmt.Println()
 	}
 
-	return LostPackets, nil
+	return nil
 }
 
 func Loss(arguments []string) error {
 	for file := 0; file < len(arguments); file++ {
-		_, err := CalculateLoss(arguments[file])
+		err := CalculateLoss(arguments[file])
 		if err != nil {
 			return err
 		}

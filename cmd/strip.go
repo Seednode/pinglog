@@ -14,12 +14,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const ansi = "\x1b[[0-9;]*m|\x07"
+const escapeSequences = "\x1b[[0-9;]*m|\x07"
 
-var re = regexp.MustCompile(ansi)
+var re = regexp.MustCompile(escapeSequences)
 
-func Strip(str string) string {
-	return re.ReplaceAllString(str, "")
+func Strip(input string) string {
+	return re.ReplaceAllString(input, "")
 }
 
 func StripColors(args []string) error {
