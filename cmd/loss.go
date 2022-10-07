@@ -80,7 +80,7 @@ func CalculateLoss(logFile string) error {
 			lostPacketCount++
 			lostLastPacket = true
 		case !lostThisPacket && lostLastPacket:
-			endTime, err = parseTime(stripped)
+			endTime = timestamp
 			if err != nil {
 				return err
 			}
