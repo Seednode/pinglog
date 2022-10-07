@@ -16,16 +16,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func parseTime(line string) (time.Time, error) {
+func parseTime(line string) (string, error) {
 	fields := strings.Fields(line)
 
 	t, err := time.Parse(DATE, fields[0]+" "+fields[1]+" "+fields[2])
 	if err != nil {
 		fmt.Printf("Failed to parse time from '%v'\n", line)
-		return time.Time{}, err
+		return "", err
 	}
 
-	return t, nil
+	return t.Format(DATE), nil
 }
 
 func CalculateLoss(logFile string) error {
@@ -45,11 +45,11 @@ func CalculateLoss(logFile string) error {
 		return err
 	}
 
-	var lostLastPacket bool = false
-	var lastTimestamp = time.Time{}
-	var lostPacketCount int = 0
-	var startTime = time.Time{}
-	var endTime = time.Time{}
+	var lostLastPacket bool
+	var lastTimestamp string
+	var lostPacketCount int
+	var startTime string
+	var endTime string
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
