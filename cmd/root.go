@@ -23,9 +23,7 @@ var IPv4 bool
 var IPv6 bool
 var MaxRTT time.Duration
 var Output string
-var Privileged bool
 var Quiet bool
-var RTT bool
 var Size uint16
 var Timeout time.Duration
 var Timestamp bool
@@ -63,9 +61,7 @@ func init() {
 	rootCmd.Flags().DurationVarP(&MaxRTT, "max-rtt", "m", time.Hour, "colorize packets over this rtt")
 	rootCmd.Flags().StringVarP(&Output, "output", "o", "", "write to the specified file as well as stdout")
 	rootCmd.Flags().Lookup("output").NoOptDefVal = "<hostname>.log"
-	rootCmd.Flags().BoolVar(&Privileged, "privileged", false, "run in privileged mode (always enabled on Windows)")
 	rootCmd.Flags().BoolVarP(&Quiet, "quiet", "q", false, "only display summary at end")
-	rootCmd.Flags().BoolVar(&RTT, "record-rtts", false, "record RTTs (can increase memory use for long sessions)")
 	rootCmd.Flags().Uint16VarP(&Size, "size", "s", 56, "size of packets, in bytes")
 	rootCmd.Flags().DurationVarP(&Timeout, "timeout", "w", time.Duration(math.MaxInt64), "connection timeout")
 	rootCmd.Flags().BoolVarP(&Timestamp, "timestamp", "t", false, "prepend timestamps to output")

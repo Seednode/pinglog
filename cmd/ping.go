@@ -91,7 +91,7 @@ func configurePinger(myPing *ping.Pinger) error {
 	myPing.Interval = Interval
 	myPing.Timeout = Timeout
 	myPing.TTL = int(TTL)
-	myPing.RecordRtts = RTT
+	myPing.RecordRtts = false
 
 	// privileged is required on Windows
 	switch runtime.GOOS {

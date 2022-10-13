@@ -58,9 +58,7 @@ Flags:
   -6, --ipv6                               force dns resolution to ipv6
   -m, --max-rtt duration                   colorize packets over this rtt (default 1h0m0s)
   -o, --output string[="<hostname>.log"]   write to the specified file as well as stdout
-      --privileged                         run in privileged mode (always enabled on Windows)
   -q, --quiet                              only display summary at end
-      --record-rtts                        record RTTs (can increase memory use for long sessions)
   -s, --size uint16                        size of packets, in bytes (default 56)
   -w, --timeout duration                   connection timeout (default 2562047h47m16.854775807s)
   -t, --timestamp                          prepend timestamps to output
