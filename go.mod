@@ -2,7 +2,7 @@ module seedno.de/seednode/pinglog
 
 go 1.19
 
-require github.com/spf13/cobra v1.6.0
+require github.com/spf13/cobra v1.6.1
 
 require (
 	github.com/fatih/color v1.13.0
