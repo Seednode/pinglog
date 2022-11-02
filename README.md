@@ -49,20 +49,20 @@ Available Commands:
 Flags:
   -b, --beep                               enable audible bell for exceeded max-rtt
   -C, --color                              enable colorized output
-  -c, --count uint                         number of packets to send
-  -d, --dropped                            log dropped packets
+  -c, --count uint                         number of pings to send
+  -d, --dropped                            log dropped pings
   -f, --force                              overwrite log file without prompting
   -h, --help                               help for pinglog
-  -i, --interval duration                  time between packets (default 1s)
+  -i, --interval duration                  time between pings (default 1s)
   -4, --ipv4                               force dns resolution to ipv4
   -6, --ipv6                               force dns resolution to ipv6
-  -m, --max-rtt duration                   colorize packets over this rtt (default 1h0m0s)
+  -m, --max-rtt duration                   colorize pings over this rtt (default 1h0m0s)
   -o, --output string[="<hostname>.log"]   write to the specified file as well as stdout
   -q, --quiet                              only display summary at end
-  -s, --size uint16                        size of packets, in bytes (default 56)
+  -s, --size uint16                        size of payload, in bytes (default 56)
   -w, --timeout duration                   connection timeout (default 2562047h47m16.854775807s)
   -t, --timestamp                          prepend timestamps to output
-  -T, --ttl uint16                         max time to live (default 128)
+  -T, --ttl uint16                         maximum time-to-live (default 128)
 
 Use "pinglog [command] --help" for more information about a command.
 ```
