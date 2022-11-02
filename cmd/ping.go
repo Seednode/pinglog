@@ -93,7 +93,7 @@ func configurePinger(myPing *ping.Pinger) error {
 	myPing.TTL = int(TTL)
 	myPing.RecordRtts = false
 
-	// privileged is required on Windows
+	// Running in privileged mode is required on Windows hosts
 	switch runtime.GOOS {
 	case "windows":
 		myPing.SetPrivileged(true)
