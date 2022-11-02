@@ -35,6 +35,7 @@ Colors can be stripped from log files via the `strip` subcommand, e.g. `pinglog 
 
 ## Linux
 You may need to run `sudo sysctl -w net.ipv4.ping_group_range="0 2147483647"` on Linux hosts.
+
 (See [here](https://github.com/go-ping/ping#supported-operating-systems) for details)
 
 ## Usage output
