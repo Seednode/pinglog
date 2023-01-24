@@ -16,8 +16,8 @@ import (
 	"strings"
 )
 
-func removeExisting(logFile string, shouldPrompt bool) error {
-	if shouldPrompt {
+func removeExisting(logFile string) error {
+	if ForceOverwrite {
 		_, err := fmt.Print("File " + logFile + " already exists. Remove? (y/N) ")
 		if err != nil {
 			return err
@@ -32,7 +32,6 @@ func removeExisting(logFile string, shouldPrompt bool) error {
 	}
 
 	err := os.Remove(logFile)
-
 	if err != nil && !errors.Is(err, fs.ErrNotExist) {
 		return err
 	}
@@ -42,18 +41,16 @@ func removeExisting(logFile string, shouldPrompt bool) error {
 
 func checkExisting(logFile string) error {
 	_, err := os.Stat(logFile)
-
 	switch {
-	case !errors.Is(err, os.ErrNotExist) && !ForceOverwrite:
-		err := removeExisting(logFile, true)
-		if err != nil {
-			return err
-		}
-	case errors.Is(err, os.ErrNotExist) && ForceOverwrite:
-		err := removeExisting(logFile, false)
-		if err != nil {
-			return err
-		}
+	case errors.Is(err, os.ErrNotExist):
+		return nil
+	case err != nil:
+		return err
+	}
+
+	err = removeExisting(logFile)
+	if err != nil {
+		return err
 	}
 
 	return nil

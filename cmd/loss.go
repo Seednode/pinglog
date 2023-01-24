@@ -26,7 +26,7 @@ func parseTime(line string) (string, error) {
 	return t.Format(DATE), nil
 }
 
-func CalculateLoss(logFile string) error {
+func calculateLoss(logFile string) error {
 	file, err := os.Open(logFile)
 	if err != nil {
 		return err
@@ -103,25 +103,16 @@ func CalculateLoss(logFile string) error {
 	return nil
 }
 
-func Loss(arguments []string) error {
-	for file := 0; file < len(arguments); file++ {
-		err := CalculateLoss(arguments[file])
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 var lossCmd = &cobra.Command{
 	Use:   "loss <file1> [file2]...",
 	Short: "Calculate periods of packet loss from log file(s)",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		err := Loss(args)
-		if err != nil {
-			log.Fatal(err)
+		for file := 0; file < len(args); file++ {
+			err := calculateLoss(args[file])
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 	},
 }

@@ -31,22 +31,6 @@ type Packets struct {
 	Current  int
 }
 
-func initializeColors() *Colors {
-	return &Colors{
-		Blue:  color.New(color.FgBlue),
-		Green: color.New(color.FgGreen),
-		Grey:  color.New(color.FgHiBlack),
-		Red:   color.New(color.FgRed),
-	}
-}
-
-func initializeCounters() *Packets {
-	return &Packets{
-		Expected: 0,
-		Current:  0,
-	}
-}
-
 func humanReadableSize(bytes int) string {
 	const unit = 1000
 
@@ -145,11 +129,7 @@ func showReceived(pkt *ping.Packet, myPing *ping.Pinger, packets *Packets, color
 		packets.Expected = packets.Current + 1
 	}
 
-	if Quiet {
-		return nil
-	}
-
-	if Timestamp {
+	if Timestamp && !Quiet {
 		timeStamp := time.Now().Format(DATE)
 		_, err := fmt.Printf("%v | %v from %v: icmp_seq=%v ttl=%v time=%v\n",
 			colors.Grey.Sprintf(timeStamp),
@@ -161,7 +141,7 @@ func showReceived(pkt *ping.Packet, myPing *ping.Pinger, packets *Packets, color
 		if err != nil {
 			return err
 		}
-	} else {
+	} else if !Quiet {
 		_, err := fmt.Printf("%v from %v: icmp_seq=%v ttl=%v time=%v\n",
 			colors.Blue.Sprintf("%v bytes", pkt.Nbytes-8),
 			colors.Blue.Sprintf("%v", pkt.IPAddr),
@@ -216,7 +196,7 @@ func showStatistics(stats *ping.Statistics, myPing *ping.Pinger, packets *Packet
 
 	runTime := time.Since(startTime)
 
-	if isEnding && !wasInterrupted && Dropped && (Count != 0) && (packets.Current != (int(Count) - 1)) {
+	if isEnding && !wasInterrupted && Dropped && Count != 0 && (packets.Current != (int(Count) - 1)) {
 		for c := packets.Current + 1; c < int(Count); c++ {
 			s += fmt.Sprintf("%v", colors.Red.Sprintf("Packet %v lost or arrived out of order.\n", c))
 		}
@@ -270,8 +250,17 @@ func pingCmd(arguments []string) error {
 		return err
 	}
 
-	colors := initializeColors()
-	packets := initializeCounters()
+	colors := &Colors{
+		Blue:  color.New(color.FgBlue),
+		Green: color.New(color.FgGreen),
+		Grey:  color.New(color.FgHiBlack),
+		Red:   color.New(color.FgRed),
+	}
+
+	packets := &Packets{
+		Expected: 0,
+		Current:  0,
+	}
 
 	myPing.OnRecv = func(pkt *ping.Packet) {
 		err := showReceived(pkt, myPing, packets, colors)
