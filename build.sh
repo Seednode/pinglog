@@ -4,7 +4,6 @@ package_name="pinglog"
 mkdir -p builds
 
 platforms=(
-  "android/amd64"
   "android/arm64"
   "darwin/amd64"
   "darwin/arm64"
