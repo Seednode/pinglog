@@ -52,10 +52,10 @@ Available Commands:
   version     Print version
 
 Flags:
-  -b, --beep                               enable audible bell for exceeded max-rtt
-  -C, --color                              enable colorized output
+  -b, --beep                               enable audible bell for exceeded max-rtt (default true)
+  -C, --color                              enable colorized output (default true)
   -c, --count uint                         number of pings to send
-  -d, --dropped                            log dropped pings
+  -d, --dropped                            log dropped pings (default true)
   -f, --force                              overwrite log file without prompting
   -h, --help                               help for pinglog
   -i, --interval duration                  time between pings (default 1s)
@@ -66,7 +66,7 @@ Flags:
   -q, --quiet                              only display summary at end
   -s, --size uint16                        size of payload, in bytes (default 56)
   -w, --timeout duration                   connection timeout (default 2562047h47m16.854775807s)
-  -t, --timestamp                          prepend timestamps to output
+  -t, --timestamp                          prepend timestamps to output (default true)
   -T, --ttl uint16                         maximum time-to-live (default 128)
 
 Use "pinglog [command] --help" for more information about a command.
