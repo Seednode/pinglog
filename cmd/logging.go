@@ -17,7 +17,7 @@ import (
 )
 
 func removeExisting(logFile string) error {
-	if ForceOverwrite {
+	if !ForceOverwrite {
 		_, err := fmt.Print("File " + logFile + " already exists. Remove? (y/N) ")
 		if err != nil {
 			return err
