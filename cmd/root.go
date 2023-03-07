@@ -49,10 +49,10 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().BoolVarP(&Beep, "beep", "b", false, "enable audible bell for exceeded max-rtt")
-	rootCmd.Flags().BoolVarP(&Color, "color", "C", false, "enable colorized output")
+	rootCmd.Flags().BoolVarP(&Beep, "beep", "b", true, "enable audible bell for exceeded max-rtt")
+	rootCmd.Flags().BoolVarP(&Color, "color", "C", true, "enable colorized output")
 	rootCmd.Flags().Uint64VarP(&Count, "count", "c", 0, "number of pings to send")
-	rootCmd.Flags().BoolVarP(&Dropped, "dropped", "d", false, "log dropped pings")
+	rootCmd.Flags().BoolVarP(&Dropped, "dropped", "d", true, "log dropped pings")
 	rootCmd.Flags().BoolVarP(&ForceOverwrite, "force", "f", false, "overwrite log file without prompting")
 	rootCmd.Flags().DurationVarP(&Interval, "interval", "i", time.Second, "time between pings")
 	rootCmd.Flags().BoolVarP(&IPv4, "ipv4", "4", false, "force dns resolution to ipv4")
@@ -64,6 +64,6 @@ func init() {
 	rootCmd.Flags().BoolVarP(&Quiet, "quiet", "q", false, "only display summary at end")
 	rootCmd.Flags().Uint16VarP(&Size, "size", "s", 56, "size of payload, in bytes")
 	rootCmd.Flags().DurationVarP(&Timeout, "timeout", "w", time.Duration(math.MaxInt64), "connection timeout")
-	rootCmd.Flags().BoolVarP(&Timestamp, "timestamp", "t", false, "prepend timestamps to output")
+	rootCmd.Flags().BoolVarP(&Timestamp, "timestamp", "t", true, "prepend timestamps to output")
 	rootCmd.Flags().Uint16VarP(&TTL, "ttl", "T", 128, "maximum time-to-live")
 }
