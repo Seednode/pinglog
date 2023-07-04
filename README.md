@@ -40,6 +40,8 @@ You may need to run `sudo sysctl -w net.ipv4.ping_group_range="0 2147483647"` on
 
 ## Usage output
 ```
+A more featureful ping tool.
+
 Usage:
   pinglog [flags] <host>
   pinglog [command]
@@ -49,11 +51,10 @@ Available Commands:
   help        Help about any command
   loss        Calculate periods of packet loss from log file(s)
   strip       Strip ANSI color codes from log file
-  version     Print version
 
 Flags:
   -b, --beep                               enable audible bell for exceeded max-rtt (default true)
-  -C, --color                              enable colorized output (default true)
+  -C, --colorize                           enable colorized output (default true)
   -c, --count uint                         number of pings to send
   -d, --dropped                            log dropped pings (default true)
   -f, --force                              overwrite log file without prompting
@@ -65,9 +66,10 @@ Flags:
   -o, --output string[="<hostname>.log"]   write to the specified file as well as stdout
   -q, --quiet                              only display summary at end
   -s, --size uint16                        size of payload, in bytes (default 56)
-  -w, --timeout duration                   connection timeout (default 2562047h47m16.854775807s)
+  -w, --timeout duration                   connection timeout (default 10s)
   -t, --timestamp                          prepend timestamps to output (default true)
   -T, --ttl uint16                         maximum time-to-live (default 128)
+  -V, --version                            display version and exit
 
 Use "pinglog [command] --help" for more information about a command.
 ```
