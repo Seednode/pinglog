@@ -6,6 +6,7 @@ package cmd
 
 import (
 	"log"
+	"math"
 	"os"
 	"time"
 
@@ -13,7 +14,7 @@ import (
 )
 
 const (
-	Version string = "0.20.1"
+	Version string = "0.20.2"
 )
 
 var beep bool
@@ -67,7 +68,7 @@ func init() {
 	rootCmd.Flags().Lookup("output").NoOptDefVal = "<hostname>.log"
 	rootCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "only display summary at end")
 	rootCmd.Flags().Uint16VarP(&size, "size", "s", 56, "size of payload, in bytes")
-	rootCmd.Flags().DurationVarP(&timeout, "timeout", "w", 10*time.Second, "connection timeout")
+	rootCmd.Flags().DurationVarP(&timeout, "timeout", "w", time.Duration(math.MaxInt64), "timeout before ping exits, regardless of number of packets sent or received")
 	rootCmd.Flags().BoolVarP(&timestamp, "timestamp", "t", true, "prepend timestamps to output")
 	rootCmd.Flags().Uint16VarP(&ttl, "ttl", "T", 128, "maximum time-to-live")
 	rootCmd.Flags().BoolVarP(&version, "version", "V", false, "display version and exit")
