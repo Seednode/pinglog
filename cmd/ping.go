@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/signal"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/fatih/color"
@@ -192,33 +193,33 @@ func showDuplicate(pkt *ping.Packet, colors *Colors) error {
 }
 
 func showStatistics(stats *ping.Statistics, myPing *ping.Pinger, packets *Packets, colors *Colors, startTime time.Time, wasInterrupted bool, isEnding bool) string {
-	var s string
+	var s strings.Builder
 
 	runTime := time.Since(startTime)
 
 	if isEnding && !wasInterrupted && dropped && count != 0 && (packets.Current != (int(count) - 1)) {
 		for c := packets.Current + 1; c < int(count); c++ {
-			s += fmt.Sprintf("%v", colors.Red.Sprintf("Packet %v lost or arrived out of order.\n", c))
+			s.WriteString(fmt.Sprintf("%v", colors.Red.Sprintf("Packet %v lost or arrived out of order.\n", c)))
 		}
 	}
 
-	s += fmt.Sprintf("--- %v ping statistics ---\n", colors.Green.Sprintf(stats.Addr))
+	s.WriteString(fmt.Sprintf("--- %v ping statistics ---\n", colors.Green.Sprintf(stats.Addr)))
 
-	s += fmt.Sprintf("%v packets transmitted (%v), %v received (%v), %v packet loss, time %v\n",
+	s.WriteString(fmt.Sprintf("%v packets transmitted (%v), %v received (%v), %v packet loss, time %v\n",
 		colors.Blue.Sprintf("%v", stats.PacketsSent),
 		colors.Blue.Sprintf(humanReadableSize(stats.PacketsSent*myPing.Size)),
 		colors.Blue.Sprintf("%v", stats.PacketsRecv),
 		colors.Blue.Sprintf(humanReadableSize(stats.PacketsRecv*myPing.Size)),
 		highlightPacketLoss(stats.PacketLoss, colors),
-		colors.Blue.Sprintf("%v", runTime.Truncate(time.Millisecond)))
+		colors.Blue.Sprintf("%v", runTime.Truncate(time.Millisecond))))
 
-	s += fmt.Sprintf("rtt min/avg/max/mdev = %v/%v/%v/%v\n\n",
+	s.WriteString(fmt.Sprintf("rtt min/avg/max/mdev = %v/%v/%v/%v\n\n",
 		highlightLongRTT(stats.MinRtt.Truncate(time.Microsecond), colors, true),
 		highlightLongRTT(stats.AvgRtt.Truncate(time.Microsecond), colors, true),
 		highlightLongRTT(stats.MaxRtt.Truncate(time.Microsecond), colors, true),
-		colors.Blue.Sprintf("%v", stats.StdDevRtt.Truncate(time.Microsecond)))
+		colors.Blue.Sprintf("%v", stats.StdDevRtt.Truncate(time.Microsecond))))
 
-	return s
+	return s.String()
 }
 
 func showStart(myPing *ping.Pinger, colors *Colors) error {
