@@ -66,7 +66,7 @@ Flags:
   -o, --output string[="<hostname>.log"]   write to the specified file as well as stdout
   -q, --quiet                              only display summary at end
   -s, --size uint16                        size of payload, in bytes (default 56)
-  -w, --timeout duration                   connection timeout (default 10s)
+  -w, --timeout duration                   timeout before ping exits, regardless of number of packets sent or received (default 2562047h47m16.854775807s)
   -t, --timestamp                          prepend timestamps to output (default true)
   -T, --ttl uint16                         maximum time-to-live (default 128)
   -V, --version                            display version and exit
