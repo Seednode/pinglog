@@ -7,7 +7,6 @@ package cmd
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"regexp"
 
@@ -16,10 +15,8 @@ import (
 
 const escapeSequences = "\x1b[[0-9;]*m|\x07"
 
-var re = regexp.MustCompile(escapeSequences)
-
-func Strip(input string) string {
-	return re.ReplaceAllString(input, "")
+func Strip(input string, regex *regexp.Regexp) string {
+	return regex.ReplaceAllString(input, "")
 }
 
 func StripColors(args []string) error {
@@ -27,23 +24,22 @@ func StripColors(args []string) error {
 	if err != nil {
 		return err
 	}
-	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}(file)
+	defer file.Close()
+
+	regex := regexp.MustCompile(escapeSequences)
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		strippedLine := Strip(scanner.Text())
+		strippedLine := Strip(scanner.Text(), regex)
+
 		_, err := fmt.Println(strippedLine)
 		if err != nil {
 			return err
 		}
 	}
 
-	if err := scanner.Err(); err != nil {
+	err = scanner.Err()
+	if err != nil {
 		return err
 	}
 
@@ -54,11 +50,13 @@ var stripCmd = &cobra.Command{
 	Use:   "strip <file>",
 	Short: "Strip ANSI color codes from log file",
 	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		err := StripColors(args)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
+
+		return nil
 	},
 }
 
