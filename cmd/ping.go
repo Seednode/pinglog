@@ -6,7 +6,6 @@ package cmd
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"os"
 	"os/signal"
@@ -282,7 +281,6 @@ func pingCmd(arguments []string) error {
 
 			if string(input) == "\n" {
 				fmt.Fprint(os.Stderr, showStatistics(pinger.Statistics(), pinger, packets, colors, startTime, false, false))
-				errorChannel <- errors.New("test")
 			}
 		}
 	}()
