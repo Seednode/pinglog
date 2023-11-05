@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	Version string = "0.21.1"
+	ReleaseVersion string = "0.22.0"
 )
 
 var (
@@ -88,6 +88,15 @@ func init() {
 	rootCmd.Flags().IntVarP(&ttl, "ttl", "T", 128, "maximum time-to-live")
 	rootCmd.Flags().BoolVarP(&version, "version", "V", false, "display version and exit")
 
+	rootCmd.Flags().SetInterspersed(true)
+
+	rootCmd.CompletionOptions.HiddenDefaultCmd = true
+
+	rootCmd.SilenceErrors = true
+	rootCmd.SetHelpCommand(&cobra.Command{
+		Hidden: true,
+	})
+
 	rootCmd.SetVersionTemplate("pinglog v{{.Version}}\n")
-	rootCmd.Version = Version
+	rootCmd.Version = ReleaseVersion
 }
