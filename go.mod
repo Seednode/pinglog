@@ -5,7 +5,7 @@ go 1.21
 require github.com/spf13/cobra v1.8.0
 
 require (
-	github.com/fatih/color v1.15.0
+	github.com/fatih/color v1.16.0
 	github.com/go-ping/ping v1.1.0
 )
 
