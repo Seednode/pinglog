@@ -83,9 +83,7 @@ func showReceived(pkt *ping.Packet, pinger *ping.Pinger, packets *Packets, color
 	switch {
 	case dropped && timestamp && (packets.Expected != packets.Current):
 		for c := packets.Expected; c < packets.Current; c++ {
-			timeStamp := time.Now().Format(DATE)
-
-			_, err := fmt.Printf("%v | %v", colors.Grey.Sprintf(timeStamp), colors.Red.Sprintf("Packet %v lost or arrived out of order.\n", c))
+			_, err := fmt.Printf("%v | %v", colors.Grey.Sprintf(time.Now().Format(DATE)), colors.Red.Sprintf("Packet %v lost or arrived out of order.\n", c))
 			if err != nil {
 				return err
 			}
@@ -104,9 +102,8 @@ func showReceived(pkt *ping.Packet, pinger *ping.Pinger, packets *Packets, color
 	}
 
 	if timestamp && !quiet {
-		timeStamp := time.Now().Format(DATE)
 		_, err := fmt.Printf("%v | %v from %v: icmp_seq=%v ttl=%v time=%v\n",
-			colors.Grey.Sprintf(timeStamp),
+			colors.Grey.Sprintf(time.Now().Format(DATE)),
 			colors.Blue.Sprintf("%v bytes", pkt.Nbytes-8),
 			colors.Blue.Sprintf("%v", pkt.IPAddr),
 			colors.Blue.Sprintf("%v", pkt.Seq),
@@ -136,10 +133,8 @@ func showReceived(pkt *ping.Packet, pinger *ping.Pinger, packets *Packets, color
 
 func showDuplicate(pkt *ping.Packet, colors *Colors) error {
 	if timestamp {
-		timeStamp := time.Now().Format(DATE)
-
 		_, err := fmt.Printf("%v | %v from %v: icmp_seq=%v ttl=%v time=%v %v\n",
-			colors.Grey.Sprintf(timeStamp),
+			colors.Grey.Sprintf(time.Now().Format(DATE)),
 			colors.Blue.Sprintf("%v bytes", pkt.Nbytes-8),
 			colors.Blue.Sprintf("%v", pkt.IPAddr),
 			colors.Blue.Sprintf("%v", pkt.Seq),
@@ -168,8 +163,6 @@ func showDuplicate(pkt *ping.Packet, colors *Colors) error {
 func showStatistics(stats *ping.Statistics, pinger *ping.Pinger, packets *Packets, colors *Colors, startTime time.Time, wasInterrupted bool, isEnding bool) string {
 	var s strings.Builder
 
-	runTime := time.Since(startTime)
-
 	if isEnding && !wasInterrupted && dropped && count != 0 && (packets.Current != (count - 1)) {
 		for c := packets.Current + 1; c < count; c++ {
 			s.WriteString(fmt.Sprintf("%v", colors.Red.Sprintf("Packet %v lost or arrived out of order.\n", c)))
@@ -184,7 +177,7 @@ func showStatistics(stats *ping.Statistics, pinger *ping.Pinger, packets *Packet
 		colors.Blue.Sprintf("%v", stats.PacketsRecv),
 		colors.Blue.Sprintf(humanReadableSize(stats.PacketsRecv*pinger.Size)),
 		highlightPacketLoss(stats.PacketLoss, colors),
-		colors.Blue.Sprintf("%v", runTime.Truncate(time.Millisecond))))
+		colors.Blue.Sprintf("%v", time.Since(startTime).Truncate(time.Millisecond))))
 
 	s.WriteString(fmt.Sprintf("rtt min/avg/max/mdev = %v/%v/%v/%v\n\n",
 		highlightLongRTT(stats.MinRtt.Truncate(time.Microsecond), colors, true),
