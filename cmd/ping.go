@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"regexp"
 	"runtime"
 	"strings"
 	"time"
@@ -202,7 +203,9 @@ func showStart(pinger *ping.Pinger, colors *Colors) error {
 }
 
 func pingCmd(arguments []string) error {
-	host := arguments[0]
+	url := regexp.MustCompile(`^([^:\/]+://)?([^:\/]+)(.+)?$`)
+
+	host := url.FindAllStringSubmatch(arguments[0], -1)[0][2]
 
 	var startTime = time.Time{}
 	var wasInterrupted = false
