@@ -54,7 +54,7 @@ Available Commands:
 
 Flags:
   -b, --beep                               enable audible bell for exceeded max-rtt (default true)
-  -C, --colorize                           enable colorized output (default true)
+  -C, --color                              enable colorized output (default true)
   -c, --count uint                         number of pings to send
   -d, --dropped                            log dropped pings (default true)
   -f, --force                              overwrite log file without prompting

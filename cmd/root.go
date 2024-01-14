@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	ReleaseVersion string = "0.23.1"
+	ReleaseVersion string = "0.24.0"
 )
 
 var (
@@ -73,7 +73,7 @@ func Execute() {
 
 func init() {
 	rootCmd.Flags().BoolVarP(&beep, "beep", "b", true, "enable audible bell for exceeded max-rtt")
-	rootCmd.Flags().BoolVarP(&colorize, "colorize", "C", true, "enable colorized output")
+	rootCmd.Flags().BoolVarP(&colorize, "color", "C", true, "enable colorized output")
 	rootCmd.Flags().IntVarP(&count, "count", "c", 0, "number of pings to send")
 	rootCmd.Flags().BoolVarP(&dropped, "dropped", "d", true, "log dropped pings")
 	rootCmd.Flags().DurationVarP(&interval, "interval", "i", time.Second, "time between pings")
