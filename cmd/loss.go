@@ -1,5 +1,5 @@
 /*
-Copyright © 2023 Seednode <seednode@seedno.de>
+Copyright © 2024 Seednode <seednode@seedno.de>
 */
 
 package cmd
