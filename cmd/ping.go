@@ -273,6 +273,8 @@ func pingCmd(arguments []string) error {
 			input, _, err := consoleReader.ReadRune()
 			if err != nil {
 				errorChannel <- err
+
+				continue
 			}
 
 			if string(input) == "\n" {
