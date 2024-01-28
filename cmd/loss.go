@@ -80,7 +80,7 @@ func calculateLoss(logFile string) error {
 				return err
 			}
 
-			fmt.Printf("%v => %v [%v packet(s) lost]\n", startTime, endTime, lostPacketCount)
+			fmt.Printf("%s => %s [%d packet(s) lost]\n", startTime, endTime, lostPacketCount)
 			lostLastPacket = false
 		}
 

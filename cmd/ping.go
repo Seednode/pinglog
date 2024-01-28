@@ -7,6 +7,7 @@ package cmd
 import (
 	"bufio"
 	"fmt"
+	"net"
 	"os"
 	"os/signal"
 	"regexp"
@@ -84,7 +85,7 @@ func showReceived(pkt *ping.Packet, pinger *ping.Pinger, packets *Packets, color
 	switch {
 	case dropped && timestamp && (packets.Expected != packets.Current):
 		for c := packets.Expected; c < packets.Current; c++ {
-			_, err := fmt.Printf("%v | %v", colors.Grey.Sprintf(time.Now().Format(DATE)), colors.Red.Sprintf("Packet %v lost or arrived out of order.\n", c))
+			_, err := fmt.Printf("%s | %s", colors.Grey.Sprintf(time.Now().Format(DATE)), colors.Red.Sprintf("Packet %d lost or arrived out of order.\n", c))
 			if err != nil {
 				return err
 			}
@@ -92,10 +93,7 @@ func showReceived(pkt *ping.Packet, pinger *ping.Pinger, packets *Packets, color
 		packets.Expected = packets.Current + 1
 	case dropped && (packets.Expected != packets.Current):
 		for c := packets.Expected; c < packets.Current; c++ {
-			_, err := fmt.Printf("%v", colors.Red.Sprintf("Packet %v lost or arrived out of order.\n", c))
-			if err != nil {
-				return err
-			}
+			colors.Red.Sprintf("Packet %d lost or arrived out of order.\n", c)
 		}
 		packets.Expected = packets.Current + 1
 	case dropped:
@@ -103,22 +101,22 @@ func showReceived(pkt *ping.Packet, pinger *ping.Pinger, packets *Packets, color
 	}
 
 	if timestamp && !quiet {
-		_, err := fmt.Printf("%v | %v from %v: icmp_seq=%v ttl=%v time=%v\n",
+		_, err := fmt.Printf("%s | %s from %s: icmp_seq=%s ttl=%s time=%s\n",
 			colors.Grey.Sprintf(time.Now().Format(DATE)),
-			colors.Blue.Sprintf("%v bytes", pkt.Nbytes-8),
-			colors.Blue.Sprintf("%v", pkt.IPAddr),
-			colors.Blue.Sprintf("%v", pkt.Seq),
-			colors.Blue.Sprintf("%v", pkt.Ttl),
+			colors.Blue.Sprintf("%d bytes", pkt.Nbytes-8),
+			colors.Blue.Sprintf("%s", pkt.IPAddr),
+			colors.Blue.Sprintf("%d", pkt.Seq),
+			colors.Blue.Sprintf("%d", pkt.Ttl),
 			highlightLongRTT(pkt.Rtt.Truncate(time.Microsecond), colors, false))
 		if err != nil {
 			return err
 		}
 	} else if !quiet {
-		_, err := fmt.Printf("%v from %v: icmp_seq=%v ttl=%v time=%v\n",
-			colors.Blue.Sprintf("%v bytes", pkt.Nbytes-8),
-			colors.Blue.Sprintf("%v", pkt.IPAddr),
-			colors.Blue.Sprintf("%v", pkt.Seq),
-			colors.Blue.Sprintf("%v", pkt.Ttl),
+		_, err := fmt.Printf("%s from %s: icmp_seq=%s ttl=%s time=%s\n",
+			colors.Blue.Sprintf("%d bytes", pkt.Nbytes-8),
+			colors.Blue.Sprintf("%s", pkt.IPAddr),
+			colors.Blue.Sprintf("%d", pkt.Seq),
+			colors.Blue.Sprintf("%d", pkt.Ttl),
 			highlightLongRTT(pkt.Rtt.Truncate(time.Microsecond), colors, false))
 		if err != nil {
 			return err
@@ -134,23 +132,23 @@ func showReceived(pkt *ping.Packet, pinger *ping.Pinger, packets *Packets, color
 
 func showDuplicate(pkt *ping.Packet, colors *Colors) error {
 	if timestamp {
-		_, err := fmt.Printf("%v | %v from %v: icmp_seq=%v ttl=%v time=%v %v\n",
+		_, err := fmt.Printf("%s | %s from %s: icmp_seq=%s ttl=%s time=%s %s\n",
 			colors.Grey.Sprintf(time.Now().Format(DATE)),
-			colors.Blue.Sprintf("%v bytes", pkt.Nbytes-8),
-			colors.Blue.Sprintf("%v", pkt.IPAddr),
-			colors.Blue.Sprintf("%v", pkt.Seq),
-			colors.Blue.Sprintf("%v", pkt.Ttl),
+			colors.Blue.Sprintf("%d bytes", pkt.Nbytes-8),
+			colors.Blue.Sprintf("%s", pkt.IPAddr),
+			colors.Blue.Sprintf("%d", pkt.Seq),
+			colors.Blue.Sprintf("%d", pkt.Ttl),
 			highlightLongRTT(pkt.Rtt.Truncate(time.Microsecond), colors, false),
 			colors.Red.Sprintf("(DUP!)"))
 		if err != nil {
 			return err
 		}
 	} else {
-		_, err := fmt.Printf("%v from %v: icmp_seq=%v ttl=%v time=%v %v\n",
-			colors.Blue.Sprintf("%v bytes", pkt.Nbytes-8),
-			colors.Blue.Sprintf("%v", pkt.IPAddr),
-			colors.Blue.Sprintf("%v", pkt.Seq),
-			colors.Blue.Sprintf("%v", pkt.Ttl),
+		_, err := fmt.Printf("%s from %s: icmp_seq=%s ttl=%s time=%s %s\n",
+			colors.Blue.Sprintf("%d bytes", pkt.Nbytes-8),
+			colors.Blue.Sprintf("%s", pkt.IPAddr),
+			colors.Blue.Sprintf("%d", pkt.Seq),
+			colors.Blue.Sprintf("%d", pkt.Ttl),
 			highlightLongRTT(pkt.Rtt.Truncate(time.Microsecond), colors, false),
 			colors.Red.Sprintf("(DUP!)"))
 		if err != nil {
@@ -166,21 +164,21 @@ func showStatistics(stats *ping.Statistics, pinger *ping.Pinger, packets *Packet
 
 	if isEnding && !wasInterrupted && dropped && count != 0 && (packets.Current != (count - 1)) {
 		for c := packets.Current + 1; c < count; c++ {
-			s.WriteString(fmt.Sprintf("%v", colors.Red.Sprintf("Packet %v lost or arrived out of order.\n", c)))
+			s.WriteString(colors.Red.Sprintf("Packet %d lost or arrived out of order.\n", c))
 		}
 	}
 
 	s.WriteString(fmt.Sprintf("--- %v ping statistics ---\n", colors.Green.Sprintf(stats.Addr)))
 
-	s.WriteString(fmt.Sprintf("%v packets transmitted (%v), %v received (%v), %v packet loss, time %v\n",
-		colors.Blue.Sprintf("%v", stats.PacketsSent),
+	s.WriteString(fmt.Sprintf("%s packets transmitted (%s), %s received (%s), %s packet loss, time %s\n",
+		colors.Blue.Sprintf("%d", stats.PacketsSent),
 		colors.Blue.Sprintf(humanReadableSize(stats.PacketsSent*pinger.Size)),
-		colors.Blue.Sprintf("%v", stats.PacketsRecv),
+		colors.Blue.Sprintf("%d", stats.PacketsRecv),
 		colors.Blue.Sprintf(humanReadableSize(stats.PacketsRecv*pinger.Size)),
 		highlightPacketLoss(stats.PacketLoss, colors),
-		colors.Blue.Sprintf("%v", time.Since(startTime).Truncate(time.Millisecond))))
+		colors.Blue.Sprintf("%s", time.Since(startTime).Truncate(time.Millisecond))))
 
-	s.WriteString(fmt.Sprintf("rtt min/avg/max/mdev = %v/%v/%v/%v\n\n",
+	s.WriteString(fmt.Sprintf("rtt min/avg/max/mdev = %s/%s/%s/%s\n\n",
 		highlightLongRTT(stats.MinRtt.Truncate(time.Microsecond), colors, true),
 		highlightLongRTT(stats.AvgRtt.Truncate(time.Microsecond), colors, true),
 		highlightLongRTT(stats.MaxRtt.Truncate(time.Microsecond), colors, true),
@@ -190,11 +188,11 @@ func showStatistics(stats *ping.Statistics, pinger *ping.Pinger, packets *Packet
 }
 
 func showStart(pinger *ping.Pinger, colors *Colors) error {
-	_, err := fmt.Printf("PING %v (%v) %v(%v) bytes of data.\n",
-		colors.Green.Sprintf("%v", pinger.Addr()),
-		colors.Blue.Sprintf("%v", pinger.IPAddr()),
-		colors.Blue.Sprintf("%v", size),
-		colors.Blue.Sprintf("%v", size+28))
+	_, err := fmt.Printf("PING %s (%s) %s(%s) bytes of data.\n",
+		colors.Green.Sprintf("%s", pinger.Addr()),
+		colors.Blue.Sprintf("%s", pinger.IPAddr()),
+		colors.Blue.Sprintf("%d", size),
+		colors.Blue.Sprintf("%d", size+28))
 	if err != nil {
 		return err
 	}
@@ -203,9 +201,18 @@ func showStart(pinger *ping.Pinger, colors *Colors) error {
 }
 
 func pingCmd(arguments []string) error {
-	url := regexp.MustCompile(`^([^:\/]+://)?([^:\/]+)(.+)?$`)
+	var host string = ""
 
-	host := url.FindAllStringSubmatch(arguments[0], -1)[0][2]
+	if net.ParseIP(arguments[0]) != nil {
+		host = arguments[0]
+	} else {
+		url := regexp.MustCompile(`^([^:\/]+://)?([^:\/]+)(.+)?$`)
+
+		asUrl := url.FindAllStringSubmatch(arguments[0], -1)
+		if len(asUrl) > 0 && len(asUrl[0]) > 1 {
+			host = asUrl[0][2]
+		}
+	}
 
 	var startTime = time.Time{}
 	var wasInterrupted = false
@@ -250,7 +257,7 @@ func pingCmd(arguments []string) error {
 	}
 
 	pinger.OnFinish = func(stats *ping.Statistics) {
-		fmt.Printf("\n%v", showStatistics(stats, pinger, packets, colors, startTime, wasInterrupted, true))
+		fmt.Printf("\n%s", showStatistics(stats, pinger, packets, colors, startTime, wasInterrupted, true))
 
 		done <- true
 	}

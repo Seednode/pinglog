@@ -29,11 +29,12 @@ func highlightPacketLoss(packetLoss float64, colors *Colors) string {
 func highlightLongRTT(packetRTT time.Duration, colors *Colors, isEnding bool) string {
 	switch {
 	case packetRTT > maxRtt && beep && !isEnding:
-		fmt.Print("\a")
-		return colors.Red.Sprintf("%v", packetRTT)
+		fmt.Println("\a")
+
+		return colors.Red.Sprintf("%s", packetRTT)
 	case packetRTT > maxRtt:
-		return colors.Red.Sprintf("%v", packetRTT)
+		return colors.Red.Sprintf("%s", packetRTT)
 	default:
-		return colors.Blue.Sprintf("%v", packetRTT)
+		return colors.Blue.Sprintf("%s", packetRTT)
 	}
 }
