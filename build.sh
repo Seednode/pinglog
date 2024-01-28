@@ -47,5 +47,5 @@ for platform in "${platforms[@]}"; do
   elif [ "${GOOS}" == "linux" ] && [ "${GOARCH}" == "amd64" ]; then
     ld_flags+=' -linkmode external -extldflags "-static"'
   fi
-  env GOOS="${GOOS}" GOARCH="${GOARCH}" CC="musl-gcc" go build -trimpath -ldflags "${ld_flags}" -o "builds/${output_name}"
+  env GOOS="${GOOS}" GOARCH="${GOARCH}" CC="musl-gcc" go build -trimpath -ldflags "${ld_flags}" -tags timetzdata -o "builds/${output_name}"
 done

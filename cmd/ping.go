@@ -201,6 +201,16 @@ func showStart(pinger *ping.Pinger, colors *Colors) error {
 }
 
 func pingCmd(arguments []string) error {
+	timeZone := os.Getenv("TZ")
+	if timeZone != "" {
+		var err error
+
+		time.Local, err = time.LoadLocation(timeZone)
+		if err != nil {
+			return err
+		}
+	}
+
 	var host string = ""
 
 	if net.ParseIP(arguments[0]) != nil {
