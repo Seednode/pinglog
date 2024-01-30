@@ -107,7 +107,7 @@ func showReceived(pkt *ping.Packet, pinger *ping.Pinger, packets *Packets, color
 			colors.Blue.Sprintf("%s", pkt.IPAddr),
 			colors.Blue.Sprintf("%d", pkt.Seq),
 			colors.Blue.Sprintf("%d", pkt.Ttl),
-			highlightLongRTT(pkt.Rtt.Truncate(time.Microsecond), colors, false))
+			highlightLongRTT(pkt.Rtt.Round(time.Microsecond), colors, false))
 		if err != nil {
 			return err
 		}
@@ -117,7 +117,7 @@ func showReceived(pkt *ping.Packet, pinger *ping.Pinger, packets *Packets, color
 			colors.Blue.Sprintf("%s", pkt.IPAddr),
 			colors.Blue.Sprintf("%d", pkt.Seq),
 			colors.Blue.Sprintf("%d", pkt.Ttl),
-			highlightLongRTT(pkt.Rtt.Truncate(time.Microsecond), colors, false))
+			highlightLongRTT(pkt.Rtt.Round(time.Microsecond), colors, false))
 		if err != nil {
 			return err
 		}
@@ -138,7 +138,7 @@ func showDuplicate(pkt *ping.Packet, colors *Colors) error {
 			colors.Blue.Sprintf("%s", pkt.IPAddr),
 			colors.Blue.Sprintf("%d", pkt.Seq),
 			colors.Blue.Sprintf("%d", pkt.Ttl),
-			highlightLongRTT(pkt.Rtt.Truncate(time.Microsecond), colors, false),
+			highlightLongRTT(pkt.Rtt.Round(time.Microsecond), colors, false),
 			colors.Red.Sprintf("(DUP!)"))
 		if err != nil {
 			return err
@@ -149,7 +149,7 @@ func showDuplicate(pkt *ping.Packet, colors *Colors) error {
 			colors.Blue.Sprintf("%s", pkt.IPAddr),
 			colors.Blue.Sprintf("%d", pkt.Seq),
 			colors.Blue.Sprintf("%d", pkt.Ttl),
-			highlightLongRTT(pkt.Rtt.Truncate(time.Microsecond), colors, false),
+			highlightLongRTT(pkt.Rtt.Round(time.Microsecond), colors, false),
 			colors.Red.Sprintf("(DUP!)"))
 		if err != nil {
 			return err
@@ -176,13 +176,13 @@ func showStatistics(stats *ping.Statistics, pinger *ping.Pinger, packets *Packet
 		colors.Blue.Sprintf("%d", stats.PacketsRecv),
 		colors.Blue.Sprintf(humanReadableSize(stats.PacketsRecv*pinger.Size)),
 		highlightPacketLoss(stats.PacketLoss, colors),
-		colors.Blue.Sprintf("%s", time.Since(startTime).Truncate(time.Millisecond))))
+		colors.Blue.Sprintf("%s", time.Since(startTime).Round(time.Millisecond))))
 
 	s.WriteString(fmt.Sprintf("rtt min/avg/max/mdev = %s/%s/%s/%s\n\n",
-		highlightLongRTT(stats.MinRtt.Truncate(time.Microsecond), colors, true),
-		highlightLongRTT(stats.AvgRtt.Truncate(time.Microsecond), colors, true),
-		highlightLongRTT(stats.MaxRtt.Truncate(time.Microsecond), colors, true),
-		colors.Blue.Sprintf("%v", stats.StdDevRtt.Truncate(time.Microsecond))))
+		highlightLongRTT(stats.MinRtt.Round(time.Microsecond), colors, true),
+		highlightLongRTT(stats.AvgRtt.Round(time.Microsecond), colors, true),
+		highlightLongRTT(stats.MaxRtt.Round(time.Microsecond), colors, true),
+		colors.Blue.Sprintf("%v", stats.StdDevRtt.Round(time.Microsecond))))
 
 	return s.String()
 }
