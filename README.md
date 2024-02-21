@@ -73,3 +73,8 @@ Flags:
 
 Use "pinglog [command] --help" for more information about a command.
 ```
+
+## Building the Docker image
+From inside the cloned repository, build the image using the following command:
+
+`REGISTRY=<registry url> LATEST=yes TAG=alpine ./build-docker.sh`

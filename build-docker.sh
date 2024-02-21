@@ -14,7 +14,7 @@ registry="${REGISTRY:-local}"
 image_name="pinglog"
 
 # set image version
-image_version="$(grep "ReleaseVersion" ../cmd/root.go | head -n1 | awk '{print $4}' | sed 's/\"//g')"
+image_version="$(grep "ReleaseVersion" cmd/root.go | head -n1 | awk '{print $4}' | sed 's/\"//g')"
 
 # platforms to build for
 platforms="linux/amd64"
@@ -27,7 +27,7 @@ docker buildx build \
                     --build-arg TAG="${tag}" \
                     -t "${registry}/${image_name}:${image_version}" \
                     $(if [ "${LATEST}" == "yes" ]; then echo "-t ${registry}/${image_name}:latest"; fi) \
-                    -f Dockerfile . \
+                    -f docker/Dockerfile . \
                     --load
 
 # push image to remote registry
@@ -35,7 +35,7 @@ docker buildx build --platform "${platforms}" \
                     --build-arg TAG="${tag}" \
                     -t "${registry}/${image_name}:${image_version}" \
                     $(if [ "${LATEST}" == "yes" ]; then echo "-t ${registry}/${image_name}:latest"; fi) \
-                    -f Dockerfile . \
+                    -f docker/Dockerfile . \
                     --push
 
 # copy debug image to local image repository
@@ -43,7 +43,7 @@ docker buildx build \
                     --build-arg TAG="${tag}" \
                     -t "${registry}/${image_name}:${image_version}-debug" \
                     $(if [ "${LATEST}" == "yes" ]; then echo "-t ${registry}/${image_name}:debug"; fi) \
-                    -f Dockerfile.debug	 . \
+                    -f docker/Dockerfile.debug . \
                     --load
 
 # push debug image to remote registry
@@ -51,5 +51,5 @@ docker buildx build --platform "${platforms}" \
                     --build-arg TAG="${tag}" \
                     -t "${registry}/${image_name}:${image_version}-debug" \
                     $(if [ "${LATEST}" == "yes" ]; then echo "-t ${registry}/${image_name}:debug"; fi) \
-                    -f Dockerfile.debug . \
+                    -f docker/Dockerfile.debug . \
                     --push

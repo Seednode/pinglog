@@ -7,12 +7,12 @@ FROM --platform=$BUILDPLATFORM golang:$TAG AS build
 ARG app
 
 # install dependencies
-RUN apk add --update-cache git upx
+RUN apk add --update-cache upx
 
-# clone
-RUN git clone https://git.seedno.de/seednode/$app /src/$app
+# copy source files into the container
+COPY . /src/$app/
 
-# build and compress the binary
+# build, strip, and compress the binary
 WORKDIR /src/$app
 ARG TARGETOS TARGETARCH
 RUN CGO_ENABLED=0 \
@@ -27,7 +27,7 @@ FROM scratch
 ARG app
 
 # copy in user info
-COPY --chown=root:root --chmod=0400 passwd /etc/passwd
+COPY --chown=root:root --chmod=0400 docker/passwd /etc/passwd
 
 # run as nonroot
 USER nonroot

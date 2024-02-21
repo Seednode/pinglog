@@ -6,20 +6,16 @@ ARG TAG
 FROM --platform=$BUILDPLATFORM golang:$TAG AS build
 ARG app
 
-# install dependencies
-RUN apk add --update-cache git upx
+# copy source files into the container
+COPY . /src/$app/
 
-# clone
-RUN git clone https://git.seedno.de/seednode/$app /src/$app
-
-# build and compress the binary
+# build the binary
 WORKDIR /src/$app
 ARG TARGETOS TARGETARCH
 RUN CGO_ENABLED=0 \
     GOOS=$TARGETOS \
     GOARCH=$TARGETARCH \
-    go build -trimpath -ldflags "-s -w" -tags timetzdata -o $app \
-    && upx --best --lzma $app \
+    go build -trimpath -tags timetzdata -o $app \
     && chmod 500 $app
 
 # set up final stage
@@ -27,7 +23,7 @@ FROM --platform=$BUILDPLATFORM alpine:latest
 ARG app
 
 # copy in user info
-COPY --chown=root:root --chmod=0400 passwd /etc/passwd
+COPY --chown=root:root --chmod=0400 docker/passwd /etc/passwd
 
 # run as root for debug
 USER root
@@ -35,5 +31,6 @@ USER root
 # copy in binary
 COPY --from=build --chown=root:root --chmod=0005 /src/$app/$app /$app
 
-# run application
+# launch a shell by default
 ENTRYPOINT ["/bin/ash"]
+
