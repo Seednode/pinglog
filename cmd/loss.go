@@ -65,10 +65,6 @@ func calculateLoss(logFile string) error {
 		case lostThisPacket && !lostLastPacket:
 			startTime = lastTimestamp
 			endTime = startTime
-			if err != nil {
-				return err
-			}
-
 			lostPacketCount = 1
 			lostLastPacket = true
 		case lostThisPacket && lostLastPacket:
@@ -76,10 +72,6 @@ func calculateLoss(logFile string) error {
 			lostLastPacket = true
 		case !lostThisPacket && lostLastPacket:
 			endTime = timestamp
-			if err != nil {
-				return err
-			}
-
 			fmt.Printf("%s => %s [%d packet(s) lost]\n", startTime, endTime, lostPacketCount)
 			lostLastPacket = false
 		}
