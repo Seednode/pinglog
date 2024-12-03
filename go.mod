@@ -6,7 +6,7 @@ require github.com/spf13/cobra v1.8.1
 
 require (
 	github.com/fatih/color v1.18.0
-	github.com/go-ping/ping v1.1.0
+	github.com/go-ping/ping v1.2.0
 )
 
 require (
