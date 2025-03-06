@@ -7,7 +7,7 @@ Over the years, I've written a number of bash wrappers on top of `ping(8)`, to a
 
 As part of a recent project, I've been converting my old shell scripts to Go, and this was next in the list.
 
-Built using [go-ping](https://pkg.go.dev/github.com/go-ping/ping).
+Built using [pro-bing](https://github.com/prometheus-community/pro-bing).
 
 Builds available [here](https://cdn.seedno.de/builds/pinglog).
 
