@@ -11,6 +11,11 @@ Built using [go-ping](https://pkg.go.dev/github.com/go-ping/ping).
 
 Builds available [here](https://cdn.seedno.de/builds/pinglog).
 
+### Configuration
+The following configuration methods are accepted, in order of highest to lowest priority:
+- Command-line flags
+- Environment variables
+
 ## Features
 Added features compared to `ping(8)` include:
 - Prepending timestamps
@@ -37,6 +42,19 @@ Colors can be stripped from log files via the `strip` subcommand, e.g. `pinglog 
 You may need to run `sudo sysctl -w net.ipv4.ping_group_range="0 2147483647"` on Linux hosts.
 
 (See [here](https://github.com/go-ping/ping#supported-operating-systems) for details)
+
+### Environment variables
+Almost all options configurable via flags can also be configured via environment variables. 
+
+The associated environment variable is the prefix `ROULETTE_` plus the flag name, with the following changes:
+- Leading hyphens removed
+- Converted to upper-case
+- All internal hyphens converted to underscores
+
+For example:
+- `--beep` becomes `PINGLOG_BEEP=true`
+- `--count 10` becomes `PINGLOG_COUNT=10`
+- `--output host.log` becomes `PINGLOG_OUTPUT=host.log`
 
 ## Usage output
 ```

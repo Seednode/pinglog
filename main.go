@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	ReleaseVersion string = "1.0.0"
+	ReleaseVersion string = "1.0.1"
 )
 
 var (
@@ -147,7 +147,7 @@ func main() {
 func initializeConfig(cmd *cobra.Command) {
 	v := viper.New()
 
-	v.SetEnvPrefix("roulette")
+	v.SetEnvPrefix("pinglog")
 
 	v.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 
