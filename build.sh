@@ -29,10 +29,8 @@ platforms=(
   "netbsd/amd64"
   "netbsd/arm"
   "netbsd/arm64"
-  "wasip1/wasm"
   "windows/386"
   "windows/amd64"
-  "windows/arm"
   "windows/arm64"
 )
 

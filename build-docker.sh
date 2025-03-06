@@ -14,7 +14,7 @@ registry="${REGISTRY:-local}"
 image_name="pinglog"
 
 # set image version
-image_version="$(grep "ReleaseVersion" cmd/root.go | head -n1 | awk '{print $4}' | sed 's/\"//g')"
+image_version="$(grep "ReleaseVersion" main.go | head -n1 | awk '{print $4}' | sed 's/\"//g')"
 
 # platforms to build for
 platforms="linux/amd64"
