@@ -1,4 +1,4 @@
-module seedno.de/seednode/pinglog
+module github.com/Seednode/pinglog
 
 go 1.24
 
