@@ -170,7 +170,7 @@ func showStatistics(stats *ping.Statistics, pinger *ping.Pinger, packets *Packet
 
 	s.WriteString(fmt.Sprintf("--- %v ping statistics ---\n", colors.Green.Sprint(stats.Addr)))
 
-	s.WriteString(fmt.Sprintf("%s packets transmitted (%s), %s received (%s), %s packet loss, time %s\n",
+	s.WriteString(fmt.Sprintf("%s packets transmitted (%s), %s packets received (%s), %s packet loss, time %s\n",
 		colors.Blue.Sprintf("%d", stats.PacketsSent),
 		colors.Blue.Sprint(humanReadableSize(stats.PacketsSent*pinger.Size)),
 		colors.Blue.Sprintf("%d", stats.PacketsRecv),
@@ -178,7 +178,7 @@ func showStatistics(stats *ping.Statistics, pinger *ping.Pinger, packets *Packet
 		highlightPacketLoss(stats.PacketLoss, colors),
 		colors.Blue.Sprintf("%s", time.Since(startTime).Round(time.Millisecond))))
 
-	s.WriteString(fmt.Sprintf("rtt min/avg/max/mdev = %s/%s/%s/%s\n\n",
+	s.WriteString(fmt.Sprintf("round-trip min/avg/max/stddev = %s/%s/%s/%s\n\n",
 		highlightLongRTT(stats.MinRtt.Round(time.Microsecond), colors, true),
 		highlightLongRTT(stats.AvgRtt.Round(time.Microsecond), colors, true),
 		highlightLongRTT(stats.MaxRtt.Round(time.Microsecond), colors, true),
