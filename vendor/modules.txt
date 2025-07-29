@@ -31,15 +31,14 @@ github.com/pelletier/go-toml/v2/unstable
 # github.com/prometheus-community/pro-bing v0.7.0
 ## explicit; go 1.23.0
 github.com/prometheus-community/pro-bing
-# github.com/sagikazarmark/locafero v0.9.0
+# github.com/sagikazarmark/locafero v0.10.0
 ## explicit; go 1.23.0
 github.com/sagikazarmark/locafero
-# github.com/sourcegraph/conc v0.3.0
-## explicit; go 1.19
+# github.com/sourcegraph/conc v0.3.1-0.20240121214520-5f936abd7ae8
+## explicit; go 1.20
 github.com/sourcegraph/conc
-github.com/sourcegraph/conc/internal/multierror
-github.com/sourcegraph/conc/iter
 github.com/sourcegraph/conc/panics
+github.com/sourcegraph/conc/pool
 # github.com/spf13/afero v1.14.0
 ## explicit; go 1.23.0
 github.com/spf13/afero
@@ -66,9 +65,6 @@ github.com/spf13/viper/internal/features
 # github.com/subosito/gotenv v1.6.0
 ## explicit; go 1.18
 github.com/subosito/gotenv
-# go.uber.org/multierr v1.11.0
-## explicit; go 1.19
-go.uber.org/multierr
 # golang.org/x/net v0.42.0
 ## explicit; go 1.23.0
 golang.org/x/net/bpf
