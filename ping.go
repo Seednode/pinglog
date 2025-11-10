@@ -11,7 +11,6 @@ import (
 	"os"
 	"os/signal"
 	"regexp"
-	"runtime"
 	"strings"
 	"time"
 
@@ -52,13 +51,8 @@ func configurePinger(pinger *ping.Pinger) error {
 	pinger.TTL = ttl
 	pinger.RecordRtts = false
 
-	// Running in privileged mode is required on Windows hosts
-	switch runtime.GOOS {
-	case "windows":
-		pinger.SetPrivileged(true)
-	default:
-		pinger.SetPrivileged(false)
-	}
+	// Running in privileged mode is required to send ICMP pings instead of UDP "pings"
+	pinger.SetPrivileged(true)
 
 	switch {
 	case ipv4:
