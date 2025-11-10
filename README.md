@@ -39,14 +39,14 @@ Support on older versions is not guaranteed.
 Colors can be stripped from log files via the `strip` subcommand, e.g. `pinglog strip file.log`.
 
 ## Linux
-You may need to run `sudo sysctl -w net.ipv4.ping_group_range="0 2147483647"` on Linux hosts.
+You may need to run `setcap cap_net_raw=+ep /path/to/pinglog/binary` on Linux hosts.
 
-(See [here](https://github.com/go-ping/ping#supported-operating-systems) for details)
+(See [here](https://github.com/prometheus-community/pro-bing?tab=readme-ov-file#supported-operating-systems) for details)
 
 ### Environment variables
 Almost all options configurable via flags can also be configured via environment variables. 
 
-The associated environment variable is the prefix `ROULETTE_` plus the flag name, with the following changes:
+The associated environment variable is the prefix `PINGLOG_` plus the flag name, with the following changes:
 - Leading hyphens removed
 - Converted to upper-case
 - All internal hyphens converted to underscores
