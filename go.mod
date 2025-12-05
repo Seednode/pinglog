@@ -2,7 +2,7 @@ module github.com/Seednode/pinglog
 
 go 1.25
 
-require github.com/spf13/cobra v1.10.1
+require github.com/spf13/cobra v1.10.2
 
 require (
 	github.com/fatih/color v1.18.0
