@@ -1,5 +1,5 @@
 /*
-Copyright © 2025 Seednode <seednode@seedno.de>
+Copyright © 2026 Seednode <seednode@seedno.de>
 */
 
 package main
