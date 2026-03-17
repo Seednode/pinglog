@@ -6,9 +6,6 @@ ARG TAG=alpine
 FROM --platform=$BUILDPLATFORM golang:$TAG AS build
 ARG app
 
-# install dependencies
-RUN apk add --update-cache upx
-
 # copy source files into the container
 COPY . /src/$app/
 
@@ -20,7 +17,6 @@ RUN CGO_ENABLED=0 \
     GOARCH=$TARGETARCH \
     GOEXPERIMENT=goroutineleakprofile \
     go build -trimpath -ldflags "-s -w" -tags "netgo timetzdata" -o $app \
-    && upx --best --lzma $app \
     && chmod 500 $app
 
 # set up final stage
