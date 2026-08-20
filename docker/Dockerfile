@@ -15,7 +15,6 @@ ARG TARGETOS TARGETARCH
 RUN CGO_ENABLED=0 \
     GOOS=$TARGETOS \
     GOARCH=$TARGETARCH \
-    GOEXPERIMENT=goroutineleakprofile \
     go build -trimpath -ldflags "-s -w" -tags "netgo timetzdata" -o $app \
     && chmod 500 $app
 
